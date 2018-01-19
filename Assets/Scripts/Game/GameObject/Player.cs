@@ -18,7 +18,7 @@ public class Player : SteeringAgent {
     public float maxPlayerVelocity = 3.5f;
     public float maxPlayerAcceleration = 10.0f;
     public float sizePlayer = 0.5f;
-
+    private bool isDied = false;
     private SteeringManager manager;
     private ArriveBehaviour arrive;    
     private GameObject moveObject;
@@ -28,6 +28,7 @@ public class Player : SteeringAgent {
     private float resistance;
     private float stepResistance = 0.5f;
     public ParticleSystem dieParticle;
+    Animator animator;
 
     void Awake()
     {
@@ -36,6 +37,8 @@ public class Player : SteeringAgent {
 
     // Use this for initialization
     void Start () {
+        animator = GetComponent<Animator>();
+       
         SteeringBound = GameBound.WorldBound;
         moveObject = new GameObject();
         moveObject.transform.parent = gameObject.transform;
@@ -85,14 +88,16 @@ public class Player : SteeringAgent {
 
     private void GetDamage(ObservParam obj)
     {
-        float param = (float)obj.data;
-        health = health - param;
-        observer.SendMessage(PlayerEvents.HEALTH, health);
-        if (health <= 0f)
-        {
+        if (!isDied) {
+            float param = (float)obj.data;
+            health = health - param;
+            observer.SendMessage(PlayerEvents.HEALTH, health);
+            if (health <= 0f)
+            {
         
-            //observer.SendMessage(PlayerEvents.DIE);
-            Die();
+                //observer.SendMessage(PlayerEvents.DIE);
+                Die();
+            }
         }
     }
 
@@ -104,29 +109,37 @@ public class Player : SteeringAgent {
 
     private void RemoveResistance(float lostResistent)
     {
-        resistance = resistance - lostResistent * stepResistance;
-        observer.SendMessage(PlayerEvents.RESISTANCE, resistance);
-        if (resistance <= 0f)
+        if (!isDied)
         {
-           observer.SendMessage(PlayerEvents.DIE);
-        }
-    }
+            resistance = resistance - lostResistent * stepResistance;
+            observer.SendMessage(PlayerEvents.RESISTANCE, resistance);
+            if (resistance <= 0f)
+            {
+              
+                Die();
+            }
+    }   }
 
     void Die()
     {
-        dieParticle.Play();
+        if (dieParticle) {
+            dieParticle.Play();
+        }
         StartCoroutine(Destroy());
-
+        isDied = true;
     }
     private void OnDestroy()
     {
         observer.RemoveAllListeners(this);
+        Destroy(manager);
     }
 
     IEnumerator Destroy()
     {
-        yield return new WaitForSeconds(1);
+      
+        yield return new WaitForSeconds(0.5f);
+        //Destroy(gameObject);
         observer.SendMessage(PlayerEvents.DIE);
-        Destroy(gameObject);
+        
     }
 }
