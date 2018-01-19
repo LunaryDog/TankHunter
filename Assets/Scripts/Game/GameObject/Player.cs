@@ -7,7 +7,8 @@ public enum PlayerEvents
 {
    HEALTH,
    RESISTANCE,
-   DIE
+   DIE,
+   DAMAGE
 }
 
 
@@ -26,6 +27,7 @@ public class Player : SteeringAgent {
     public float maxResistance = 100;
     private float resistance;
     private float stepResistance = 0.5f;
+    public ParticleSystem dieParticle;
 
     void Awake()
     {
@@ -48,6 +50,12 @@ public class Player : SteeringAgent {
         observer.SendMessage(PlayerEvents.RESISTANCE, resistance);
         observer.AddListener(InputEvents.MOVE, this, MovePlayer);
         observer.AddListener(EnemyEvents.DAMAGE, this, GetDamage);
+        observer.AddListener(TileEvens.DAMAGE, this, GetDamage);
+        observer.AddListener(TileEvens.SLOW, this, GetDeceleration);
+        if (dieParticle)
+        {
+            dieParticle.Stop();
+        }
     }
 
    
@@ -58,12 +66,13 @@ public class Player : SteeringAgent {
         Vector2 movePoint = new Vector2(h, v);
         observer.SendMessage(InputEvents.MOVE, movePoint);
 
+
     }
 
-    void MovePlayer(ObservParam obj)
+     void MovePlayer(ObservParam obj)
     {
         Vector2 param = (Vector2)obj.data;
-       // Debug.Log(param);
+        Debug.Log(param.magnitude);
         Vector3 movePoint = Position +  new Vector3(param.x, param.y, 0);
         moveObject.transform.position = movePoint;
         arrive.target = moveObject;
@@ -81,8 +90,16 @@ public class Player : SteeringAgent {
         observer.SendMessage(PlayerEvents.HEALTH, health);
         if (health <= 0f)
         {
-            observer.SendMessage(PlayerEvents.DIE);
+        
+            //observer.SendMessage(PlayerEvents.DIE);
+            Die();
         }
+    }
+
+    private void GetDeceleration(ObservParam obj)
+    {
+        float slow = (float)obj.data;
+        MaxVelocity = maxPlayerVelocity * slow;
     }
 
     private void RemoveResistance(float lostResistent)
@@ -95,8 +112,21 @@ public class Player : SteeringAgent {
         }
     }
 
+    void Die()
+    {
+        dieParticle.Play();
+        StartCoroutine(Destroy());
+
+    }
     private void OnDestroy()
     {
         observer.RemoveAllListeners(this);
+    }
+
+    IEnumerator Destroy()
+    {
+        yield return new WaitForSeconds(1);
+        observer.SendMessage(PlayerEvents.DIE);
+        Destroy(gameObject);
     }
 }

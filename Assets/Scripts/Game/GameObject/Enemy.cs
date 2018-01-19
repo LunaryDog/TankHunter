@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿ using UnityEngine;
 using System.Collections;
 
 public enum EnemyEvents
@@ -19,7 +19,7 @@ public class Enemy : SteeringAgent {
     private WallAvoidanceBehaviour wallAvoid;
     //private GameManager gameManager;
     private WanderBehaviour wander;
-    private LeaveBehaviour leave;
+    private SeekBehaviour seek;
     private EnemyEvents state;
     private SteeringAgent player;
     private GameObject playerObject;
@@ -31,7 +31,7 @@ public class Enemy : SteeringAgent {
     public float sizeEnemy = 0.3f;
    // Vector3 targetPoint;
     Animator animator;
-    public float attackDistance;    
+    public float attackDistance = 1.5f;    
     private float wanderMaxVelocity = 1f;
     private float evadeMaxVelocity = 2f;
 
@@ -57,21 +57,22 @@ public class Enemy : SteeringAgent {
        // leave = gameObject.GetComponent<LeaveBehaviour>();
         wander = GetComponent<WanderBehaviour>();
         colAvoid = GetComponent<CollisionAvoidanceBehaviour>();
-        wallAvoid = gameObject.GetComponent<WallAvoidanceBehaviour>();  
+        wallAvoid = GetComponent<WallAvoidanceBehaviour>();  
         evade = GetComponent<EvadeBehaviour>();
+        seek = GetComponent<SeekBehaviour>();
         wander.target = gameObject;
-     
+        seek.target = playerObject;
         evade.target = playerObject;
         state = EnemyEvents.WANDER;
       //  leave.target = gameObject.transform.parent.gameObject;
         resistance = maxResistance;
-        health = maxHealth;
+     
         if (resistanceBar)
         {
             resistanceBar.SetValue(resistance);
             resistanceBar.SetMaxValue (maxResistance);
         }
-
+        health = maxHealth;
         if (healthBar)
         {
             healthBar.SetValue(health);
@@ -90,20 +91,43 @@ public class Enemy : SteeringAgent {
         colAvoid.weight = 0f;
         wallAvoid.weight = 0f;
         evade.weight = 0f;
-        
+        seek.weight = 0f;
+        observer.AddListener(TileEvens.DAMAGE, this, GetDamage);
+        observer.AddListener(TileEvens.SLOW, this, GetDeceleration);
+        observer.AddListener(PlayerEvents.DAMAGE, this, GetDamage);
     }
         
     void Update()
     {
+        
         if (CheckforDie())
         {
-            GetDamage(20f);
-           
+            observer.SendMessage(PlayerEvents.DAMAGE, 5f);           
+        }
+        else
+        {
+            if (CheckforAttack())
+            {
+                state = EnemyEvents.ATTACK;
+            }
+            else
+            {
+                animator.SetBool("isAttack", false);
+                if (LookDangerous())
+                {
+                    state = EnemyEvents.EVADE;
+                }
+                else
+                {
+                    state = EnemyEvents.WANDER;
+                }
+            }
         }
         if (!isDie) {
-        SetBehaviorWeight(state);
+            SetBehaviorWeight(state);
         }
-        //}
+
+        MoveEnemy();
 
 
     }
@@ -118,24 +142,27 @@ public class Enemy : SteeringAgent {
         switch(stateNow)
         {
             case EnemyEvents.WANDER:
-                wander.weight = 0.1f;
+                wander.weight = 0.5f;
                 colAvoid.weight = 1f;
                 wallAvoid.weight = 0.8f;
-                evade.weight = 0.5f;
-                Wander();
+                evade.weight = 0.0f;
+                seek.weight = 0.0f;
+                //   Wander();
                 break;
             case EnemyEvents.EVADE:
                 wander.weight = 0f;
                 colAvoid.weight = 1f;
-                wallAvoid.weight = 1f;
-                evade.weight = 1f;
-                Evade();
+                wallAvoid.weight = 0.9f;
+                evade.weight = 0.7f;
+                seek.weight = 0.0f;
+                //    Evade();
                 break;
             case EnemyEvents.ATTACK:
                 wander.weight = 0f;
-                colAvoid.weight = 0f;
-                wallAvoid.weight = 0f;
+                colAvoid.weight = 1f;
+                wallAvoid.weight = 0.8f;
                 evade.weight = 0f;
+                seek.weight = 0.8f;
                 Attack();
                 break;
             case EnemyEvents.DIE:
@@ -143,6 +170,7 @@ public class Enemy : SteeringAgent {
                 colAvoid.weight = 0f;
                 wallAvoid.weight = 0f;
                 evade.weight = 0f;
+                seek.weight = 0.0f;
                 Die();
                 break;
         }
@@ -167,11 +195,9 @@ public class Enemy : SteeringAgent {
         }
     }
 
-    private void Wander()
-    {       
-            MaxVelocity = wanderMaxVelocity;        
-           
-            manager.Move();
+    private void MoveEnemy()
+    {
+        manager.Move();
         if (resistanceBar)
         {
             if (resistance < maxResistance)
@@ -180,29 +206,12 @@ public class Enemy : SteeringAgent {
                 resistanceBar.SetValue(resistance);
             }
         }
-        
-    }
-
-    private void Evade()
-    {      
-            
-            MaxVelocity = evadeMaxVelocity;
-          //  targetPoint = player.Position;
-           // evade.target = playerObject;
-            manager.Move();
-        if (resistanceBar)
-        {
-            if (resistance > 0) {
-                resistance = resistance - Time.deltaTime * stepResistance;
-                resistanceBar.SetValue(resistance);
-            }
-        }
     }
 
     private void Attack()
-    {
-        
-        animator.SetBool("isAttack", true);        
+    {        
+        animator.SetBool("isAttack", true);
+        CauseDamage(damage);
     }
 
     private void CauseDamage (float damage)
@@ -210,14 +219,21 @@ public class Enemy : SteeringAgent {
         observer.SendMessage(EnemyEvents.DAMAGE, damage);
     }
 
-    private void GetDamage(float hurt)
+    private void GetDamage(ObservParam obj)
     {
+        float hurt = (float)obj.data;
         health -= hurt;
         healthBar.SetValue(health);
         if (health <= 0f)
         {
             state = EnemyEvents.DIE;
         }
+    }
+
+    private void GetDeceleration(ObservParam obj)
+    {
+        float slow = (float)obj.data;
+        MaxVelocity = maxEnemyVelocity*slow;
     }
 
     private void Die()

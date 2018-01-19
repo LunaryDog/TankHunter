@@ -13,17 +13,31 @@ public enum InputDirection
 }
 public class InputController : BaseBehaviour {
     Observer observer;
-
+    Dictionary<string, Vector2> direction;
+    GameObject player;
     private void Awake()
     {
         observer = Observer.Instance;
     }
 
-    
-
-    public void GetDirection (string direction)
+    private void Start()
     {
+        direction = new Dictionary<string, Vector2>
+        {   {"LeftUp",    new Vector2 (-1,1 ) },
+            {"Up",        new Vector2(0,1)},
+            {"RightUp",   new Vector2(1,1)},
+            {"Left",      new Vector2(-1,0)},
+            {"Right",     new Vector2(1,0)},
+            {"LeftDown",  new Vector2(-1,-1)},
+            {"Down",      new Vector2(0,-1)},
+            {"RightDown", new Vector2(1,-1)}
+        };
+       
+    }
 
+    public void GetDirection (string dir)
+    {
+        observer.SendMessage(InputEvents.MOVE, direction[dir]);
     }
     private void OnDestroy()
     {
