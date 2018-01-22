@@ -11,7 +11,7 @@ public enum EnemyEvents
     DIE,
     DAMAGE
 };
-
+[System.Serializable]
 public class Enemy : SteeringAgent {
     Observer observer;
     private EvadeBehaviour evade;    
@@ -20,9 +20,9 @@ public class Enemy : SteeringAgent {
     //private GameManager gameManager;
     private WanderBehaviour wander;
     private SeekBehaviour seek;
-    private EnemyEvents state;
+    private EnemyEvents state = EnemyEvents.WANDER;
     private SteeringAgent player;
-    private GameObject playerObject;
+    private GameObject playerObject = GameManager.Player;
     bool isDie = false;
     SteeringManager manager;
     public float damage = 0.5f;
@@ -36,15 +36,10 @@ public class Enemy : SteeringAgent {
     private float evadeMaxVelocity = 2f;
 
     public PropertiesBar resistanceBar;
-    public float maxResistance = 100f;
-    private float resistance;    
-    private float stepResistance = 5f;
+    ResistanceProperties resistance = new ResistanceProperties();
 
     public PropertiesBar healthBar;
-    public float maxHealth = 100f;
-    private float health;
-    private float stepHealth = 5f;
-
+    HealthProperties health = new HealthProperties();
     // Use this for initialization
     void Awake()
     {
@@ -52,8 +47,8 @@ public class Enemy : SteeringAgent {
         animator = gameObject.GetComponent<Animator>();        
         manager = transform.GetComponent<SteeringManager>();
       //  gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-        player = GameManager.Player.GetComponent<SteeringAgent>();
-        playerObject = GameManager.Player;
+      
+        //playerObject = GameManager.Player;
        // leave = gameObject.GetComponent<LeaveBehaviour>();
         wander = GetComponent<WanderBehaviour>();
         colAvoid = GetComponent<CollisionAvoidanceBehaviour>();
@@ -63,20 +58,21 @@ public class Enemy : SteeringAgent {
         wander.target = gameObject;
         seek.target = playerObject;
         evade.target = playerObject;
-        state = EnemyEvents.WANDER;
+        //state = EnemyEvents.WANDER;
       //  leave.target = gameObject.transform.parent.gameObject;
-        resistance = maxResistance;
+       // resistance = maxResistance;
      
         if (resistanceBar)
         {
-            resistanceBar.SetValue(resistance);
-            resistanceBar.SetMaxValue (maxResistance);
+            resistanceBar.SetValue(resistance.Value);
+            resistanceBar.SetMaxValue (resistance.MaxValue);
         }
-        health = maxHealth;
+
+        //health = new HealthProperties();
         if (healthBar)
         {
-            healthBar.SetValue(health);
-            healthBar.SetMaxValue(maxHealth);
+            healthBar.SetValue(health.Value);
+            healthBar.SetMaxValue(health.MaxValue);
         }
 
     }
@@ -95,6 +91,7 @@ public class Enemy : SteeringAgent {
         observer.AddListener(TileEvens.DAMAGE, this, GetDamage);
         observer.AddListener(TileEvens.SLOW, this, GetDeceleration);
         observer.AddListener(PlayerEvents.DAMAGE, this, GetDamage);
+        player = playerObject.GetComponent<SteeringAgent>();
     }
         
     void Update()
@@ -199,12 +196,9 @@ public class Enemy : SteeringAgent {
     {
         manager.Move();
         if (resistanceBar)
-        {
-            if (resistance < maxResistance)
-            {
-                resistance = resistance + Time.deltaTime * stepResistance;
-                resistanceBar.SetValue(resistance);
-            }
+        {           
+                resistance.RemoveValue(Time.deltaTime);
+                resistanceBar.SetValue(resistance.Value);           
         }
     }
 
@@ -222,9 +216,9 @@ public class Enemy : SteeringAgent {
     private void GetDamage(ObservParam obj)
     {
         float hurt = (float)obj.data;
-        health -= hurt;
-        healthBar.SetValue(health);
-        if (health <= 0f)
+        health.RemoveValue(hurt);
+        healthBar.SetValue(health.Value);
+        if (health.Value <= 0f)
         {
             state = EnemyEvents.DIE;
         }

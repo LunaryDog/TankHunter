@@ -11,12 +11,15 @@ public class EvadeBehaviour : FleeBehaviour
     public override void Awake()
     {
         base.Awake();
-        targetAgent = target.GetComponent<SteeringAgent>();
+        
        // targetAux = target;
       //  target = new GameObject();
     }
-   
-    public  Vector3 getAcceleration()
+    public void Start()
+    {
+        targetAgent = target.GetComponent<SteeringAgent>();
+    }
+        public  Vector3 getAcceleration()
     {
         
         Vector3 displacement = targetAux.transform.position - manager.agent.Position;

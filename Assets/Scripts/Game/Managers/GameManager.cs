@@ -25,13 +25,14 @@ public class GameManager : BaseBehaviour
     {
 
         observer = Observer.Instance;
-        player = GameObject.FindGameObjectWithTag("Player");  
+       
     }
 
     void Start()
     {
         observer.AddListener(PlayerEvents.DIE, this, LoseGameMenu);
         observer.AddListener(EnemyManagerEvent.WIN, this, WinGameMenu);
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     void Update()

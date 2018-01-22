@@ -22,11 +22,9 @@ public class Player : SteeringAgent {
     private SteeringManager manager;
     private ArriveBehaviour arrive;    
     private GameObject moveObject;
-    public float maxHealth = 100f;
-    private float health;
-    public float maxResistance = 100;
-    private float resistance;
-    private float stepResistance = 0.5f;
+    public HealthProperties health  = new HealthProperties();
+    public ResistanceProperties resistance = new ResistanceProperties();
+
     public ParticleSystem dieParticle;
     Animator animator;
 
@@ -35,22 +33,20 @@ public class Player : SteeringAgent {
         observer = Observer.Instance;
     }
 
+    
     // Use this for initialization
     void Start () {
         animator = GetComponent<Animator>();
-       
-        SteeringBound = GameBound.WorldBound;
         moveObject = new GameObject();
+        SteeringBound = GameBound.WorldBound;       
         moveObject.transform.parent = gameObject.transform;
         manager = transform.GetComponent<SteeringManager>();
         arrive = transform.GetComponent<ArriveBehaviour>();
         MaxVelocity = maxPlayerVelocity;
         MaxAcceleration = maxPlayerAcceleration;
-        Size = sizePlayer;
-        health = maxHealth;
-        resistance = maxResistance;
-        observer.SendMessage(PlayerEvents.HEALTH, health);
-        observer.SendMessage(PlayerEvents.RESISTANCE, resistance);
+        Size = sizePlayer;        
+        observer.SendMessage(PlayerEvents.HEALTH, health.Value);
+        observer.SendMessage(PlayerEvents.RESISTANCE, resistance.Value);
         observer.AddListener(InputEvents.MOVE, this, MovePlayer);
         observer.AddListener(EnemyEvents.DAMAGE, this, GetDamage);
         observer.AddListener(TileEvens.DAMAGE, this, GetDamage);
@@ -75,7 +71,7 @@ public class Player : SteeringAgent {
      void MovePlayer(ObservParam obj)
     {
         Vector2 param = (Vector2)obj.data;
-        Debug.Log(param.magnitude);
+      
         Vector3 movePoint = Position +  new Vector3(param.x, param.y, 0);
         moveObject.transform.position = movePoint;
         arrive.target = moveObject;
@@ -90,9 +86,10 @@ public class Player : SteeringAgent {
     {
         if (!isDied) {
             float param = (float)obj.data;
-            health = health - param;
-            observer.SendMessage(PlayerEvents.HEALTH, health);
-            if (health <= 0f)
+            health.RemoveValue(param);
+
+            observer.SendMessage(PlayerEvents.HEALTH, health.Value);
+            if (health.Value <= 0f)
             {
         
                 //observer.SendMessage(PlayerEvents.DIE);
@@ -111,9 +108,10 @@ public class Player : SteeringAgent {
     {
         if (!isDied)
         {
-            resistance = resistance - lostResistent * stepResistance;
-            observer.SendMessage(PlayerEvents.RESISTANCE, resistance);
-            if (resistance <= 0f)
+            resistance.RemoveValue(lostResistent);
+           
+            observer.SendMessage(PlayerEvents.RESISTANCE, resistance.Value);
+            if (resistance.Value <= 0f)
             {
               
                 Die();

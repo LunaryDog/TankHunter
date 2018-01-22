@@ -1,49 +1,50 @@
 fileFormatVersion: 2
 guid: 794f6ad0cf8269e4783630f91e7bbfcb
-timeCreated: 1515346984
+timeCreated: 1516567042
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
-    21300000: terrainTiles_retina_0
-    21300002: terrainTiles_retina_1
-    21300004: terrainTiles_retina_2
-    21300006: terrainTiles_retina_3
-    21300008: terrainTiles_retina_4
-    21300010: terrainTiles_retina_5
-    21300012: terrainTiles_retina_6
-    21300014: terrainTiles_retina_7
-    21300016: terrainTiles_retina_8
-    21300018: terrainTiles_retina_9
-    21300020: terrainTiles_retina_10
-    21300022: terrainTiles_retina_11
-    21300024: terrainTiles_retina_12
-    21300026: terrainTiles_retina_13
-    21300028: terrainTiles_retina_14
-    21300030: terrainTiles_retina_15
-    21300032: terrainTiles_retina_16
-    21300034: terrainTiles_retina_17
-    21300036: terrainTiles_retina_18
-    21300038: terrainTiles_retina_19
-    21300040: terrainTiles_retina_20
-    21300042: terrainTiles_retina_21
-    21300044: terrainTiles_retina_22
-    21300046: terrainTiles_retina_23
-    21300048: terrainTiles_retina_24
-    21300050: terrainTiles_retina_25
-    21300052: terrainTiles_retina_26
-    21300054: terrainTiles_retina_27
-    21300056: terrainTiles_retina_28
-    21300058: terrainTiles_retina_29
-    21300060: terrainTiles_retina_30
-    21300062: terrainTiles_retina_31
-    21300064: terrainTiles_retina_32
-    21300066: terrainTiles_retina_33
-    21300068: terrainTiles_retina_34
-    21300070: terrainTiles_retina_35
-    21300072: terrainTiles_retina_36
-    21300074: terrainTiles_retina_37
-    21300076: terrainTiles_retina_38
-    21300078: terrainTiles_retina_39
+    21300000: tiles_0
+    21300002: tiles_1
+    21300004: tiles_2
+    21300006: tiles_3
+    21300008: tiles_4
+    21300010: tiles_5
+    21300012: tiles_6
+    21300014: tiles_7
+    21300016: tiles_8
+    21300018: tiles_9
+    21300020: tiles_10
+    21300022: tiles_11
+    21300024: tiles_12
+    21300026: tiles_13
+    21300028: tiles_14
+    21300030: tiles_15
+    21300032: tiles_16
+    21300034: tiles_17
+    21300036: tiles_18
+    21300038: tiles_19
+    21300040: tiles_20
+    21300042: tiles_21
+    21300044: tiles_22
+    21300046: tiles_23
+    21300048: tiles_24
+    21300050: tiles_25
+    21300052: tiles_26
+    21300054: tiles_27
+    21300056: tiles_28
+    21300058: tiles_29
+    21300060: tiles_30
+    21300062: tiles_31
+    21300064: tiles_32
+    21300066: tiles_33
+    21300068: tiles_34
+    21300070: tiles_35
+    21300072: tiles_36
+    21300074: tiles_37
+    21300076: tiles_38
+    21300078: tiles_39
+  externalObjects: {}
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -52,6 +53,8 @@ TextureImporter:
     linearTexture: 0
     fadeOut: 0
     borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
     mipMapFadeDistanceStart: 1
     mipMapFadeDistanceEnd: 3
   bumpmap:
@@ -67,10 +70,13 @@ TextureImporter:
   textureFormat: 1
   maxTextureSize: 2048
   textureSettings:
+    serializedVersion: 2
     filterMode: -1
     aniso: -1
     mipBias: -1
-    wrapMode: 1
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -80,7 +86,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 128
   alphaUsage: 1
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
@@ -92,41 +98,49 @@ TextureImporter:
   platformSettings:
   - buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    androidETC2FallbackOverride: 0
   - buildTarget: Standalone
     maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    androidETC2FallbackOverride: 0
   - buildTarget: iPhone
     maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    androidETC2FallbackOverride: 0
   - buildTarget: Android
     maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: terrainTiles_retina_0
+      name: tiles_0
       rect:
         serializedVersion: 2
         x: 0
@@ -137,9 +151,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_1
+      name: tiles_1
       rect:
         serializedVersion: 2
         x: 128
@@ -150,9 +165,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_2
+      name: tiles_2
       rect:
         serializedVersion: 2
         x: 256
@@ -163,9 +179,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_3
+      name: tiles_3
       rect:
         serializedVersion: 2
         x: 384
@@ -176,9 +193,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_4
+      name: tiles_4
       rect:
         serializedVersion: 2
         x: 512
@@ -189,9 +207,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_5
+      name: tiles_5
       rect:
         serializedVersion: 2
         x: 640
@@ -202,9 +221,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_6
+      name: tiles_6
       rect:
         serializedVersion: 2
         x: 768
@@ -215,9 +235,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_7
+      name: tiles_7
       rect:
         serializedVersion: 2
         x: 896
@@ -228,9 +249,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_8
+      name: tiles_8
       rect:
         serializedVersion: 2
         x: 1024
@@ -241,9 +263,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_9
+      name: tiles_9
       rect:
         serializedVersion: 2
         x: 1152
@@ -254,9 +277,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_10
+      name: tiles_10
       rect:
         serializedVersion: 2
         x: 0
@@ -267,9 +291,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_11
+      name: tiles_11
       rect:
         serializedVersion: 2
         x: 128
@@ -280,9 +305,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_12
+      name: tiles_12
       rect:
         serializedVersion: 2
         x: 256
@@ -293,9 +319,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_13
+      name: tiles_13
       rect:
         serializedVersion: 2
         x: 384
@@ -306,9 +333,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_14
+      name: tiles_14
       rect:
         serializedVersion: 2
         x: 512
@@ -319,9 +347,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_15
+      name: tiles_15
       rect:
         serializedVersion: 2
         x: 640
@@ -332,9 +361,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_16
+      name: tiles_16
       rect:
         serializedVersion: 2
         x: 768
@@ -345,9 +375,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_17
+      name: tiles_17
       rect:
         serializedVersion: 2
         x: 896
@@ -358,9 +389,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_18
+      name: tiles_18
       rect:
         serializedVersion: 2
         x: 1024
@@ -371,9 +403,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_19
+      name: tiles_19
       rect:
         serializedVersion: 2
         x: 1152
@@ -384,9 +417,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_20
+      name: tiles_20
       rect:
         serializedVersion: 2
         x: 0
@@ -397,9 +431,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_21
+      name: tiles_21
       rect:
         serializedVersion: 2
         x: 128
@@ -410,9 +445,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_22
+      name: tiles_22
       rect:
         serializedVersion: 2
         x: 256
@@ -423,9 +459,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_23
+      name: tiles_23
       rect:
         serializedVersion: 2
         x: 384
@@ -436,9 +473,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_24
+      name: tiles_24
       rect:
         serializedVersion: 2
         x: 512
@@ -449,9 +487,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_25
+      name: tiles_25
       rect:
         serializedVersion: 2
         x: 640
@@ -462,9 +501,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_26
+      name: tiles_26
       rect:
         serializedVersion: 2
         x: 768
@@ -475,9 +515,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_27
+      name: tiles_27
       rect:
         serializedVersion: 2
         x: 896
@@ -488,9 +529,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_28
+      name: tiles_28
       rect:
         serializedVersion: 2
         x: 1024
@@ -501,9 +543,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_29
+      name: tiles_29
       rect:
         serializedVersion: 2
         x: 1152
@@ -514,9 +557,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_30
+      name: tiles_30
       rect:
         serializedVersion: 2
         x: 0
@@ -527,9 +571,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_31
+      name: tiles_31
       rect:
         serializedVersion: 2
         x: 128
@@ -540,9 +585,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_32
+      name: tiles_32
       rect:
         serializedVersion: 2
         x: 256
@@ -553,9 +599,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_33
+      name: tiles_33
       rect:
         serializedVersion: 2
         x: 384
@@ -566,9 +613,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_34
+      name: tiles_34
       rect:
         serializedVersion: 2
         x: 512
@@ -579,9 +627,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_35
+      name: tiles_35
       rect:
         serializedVersion: 2
         x: 640
@@ -592,9 +641,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_36
+      name: tiles_36
       rect:
         serializedVersion: 2
         x: 768
@@ -605,9 +655,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_37
+      name: tiles_37
       rect:
         serializedVersion: 2
         x: 896
@@ -618,9 +669,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_38
+      name: tiles_38
       rect:
         serializedVersion: 2
         x: 1024
@@ -631,9 +683,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     - serializedVersion: 2
-      name: terrainTiles_retina_39
+      name: tiles_39
       rect:
         serializedVersion: 2
         x: 1152
@@ -644,8 +697,10 @@ TextureImporter:
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
+      physicsShape: []
       tessellationDetail: 0
     outline: []
+    physicsShape: []
   spritePackingTag: 
   userData: 
   assetBundleName: 
