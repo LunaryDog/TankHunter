@@ -16,7 +16,8 @@ public class LevelBulder : MonoBehaviour {
     public GameObject playerPrefab;
     public GameObject spawnerPrefab;
     public GameObject tilePrefab;
-    private Sprite[] spritesTile;
+    public Tilelist list;
+ //   private Sprite[] spritesTile;
     private GameObject levelParent;
 
     static float heightWorld;
@@ -34,7 +35,7 @@ public class LevelBulder : MonoBehaviour {
     void Awake()
     {
         observer = Observer.Instance;
-        LoadSprites();
+        
         LevelData levelData = Parse(levelJsonFile.text);
         levelParent = new GameObject("Level");
         heightWorld = levelData.levelProperties.levelHeight * levelData.levelProperties.tileLevelНeight;
@@ -56,6 +57,7 @@ public class LevelBulder : MonoBehaviour {
                     {
                         TileData tileData = layer.dataLayer[tileIndex++];                      
                         int spriteIndex = tileData.brushIndex;
+                      //  Debug.Log(spriteIndex);
                         if (spriteIndex == 0)
                         {
                            continue;
@@ -220,7 +222,7 @@ public class LevelBulder : MonoBehaviour {
 
     void CreateTileObject(Vector3 position, LevelData levelData, int spriteIndex, GameObject parent, TileData tileData, Dictionary<string, string> tileProperties)
     {
-        GameObject tile = CreateTile(spriteIndex, levelData.tilesets[0].tileWidth);
+        GameObject tile = CreateTile(spriteIndex);
         CreatePropertyComponents(tile, levelData.levelProperties.tileLevelWidht, tileProperties);
         tile.transform.SetParent(parent.transform);
         tile.transform.Translate(position);
@@ -230,19 +232,19 @@ public class LevelBulder : MonoBehaviour {
         }
     }
 
-    void LoadSprites()
-    {
-        spritesTile = Resources.LoadAll<Sprite>("tiles");
-    }
 
-    public GameObject CreateTile(int id, int tilewidth)
+    public GameObject CreateTile(int id)
     {
-        if (spritesTile == null)
-        {
-            LoadSprites();
-        }
-        GameObject tile = Instantiate(tilePrefab);      
-        tile.GetComponent<SpriteRenderer>().sprite = spritesTile[id - 1];
+       // Debug.Log(id);
+       // Debug.Log(list.tiles.Count);
+     //   if (spritesTile == null) 
+       // {
+           // LoadSprites();
+       // }
+        GameObject prefub = list.tiles[id-1].gameObject;
+
+        GameObject tile = Instantiate(prefub);      
+      //  tile.GetComponent<SpriteRenderer>().sprite = spritesTile[id - 1];
         return tile;
     }
 

@@ -4,9 +4,8 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 public class SaveFunctionality : MonoBehaviour {
-	
 	private LevelEditor _levelEditor;
-
+    private LevelData levelData;
     // Расширение файла для сохраненного файла
     private string _fileExtension;
 
@@ -24,8 +23,9 @@ public class SaveFunctionality : MonoBehaviour {
 
     public void Setup(GameObject fileBrowserPrefab, string fileExtension, TileIdentificationMethod saveMethod, List<Transform> tiles) {
 		_levelEditor = LevelEditor.Instance;
-		//_fileBrowserPrefab = fileBrowserPrefab;
-		_fileExtension = fileExtension.Trim() == "" ? "lvl" : fileExtension;
+        levelData  = _levelEditor.levelData;
+        //_fileBrowserPrefab = fileBrowserPrefab;
+        _fileExtension = fileExtension.Trim() == "" ? "json" : fileExtension;
 		_saveMethod = saveMethod;
 		_tiles = tiles;
 		SetupClickListeners();
@@ -42,10 +42,11 @@ public class SaveFunctionality : MonoBehaviour {
         _levelEditor.ToggleLevelEditor(_preFileBrowserState);
         if (path.Length != 0) {
             // Сохранение уровня в файл
-            BinaryFormatter bFormatter = new BinaryFormatter();
-            FileStream file = File.Create(path);
-			bFormatter.Serialize(file, _levelToSave);
-			file.Close();
+            JSONObject levelJsonFile = new JSONObject(JSONObject.Type.OBJECT);
+          //  BinaryFormatter bFormatter = new BinaryFormatter();
+           // FileStream file = File.Create(path);
+			//bFormatter.Serialize(file, _levelToSave);
+			//file.Close();
             // Сброс временной переменной
             _levelToSave = null;
         }

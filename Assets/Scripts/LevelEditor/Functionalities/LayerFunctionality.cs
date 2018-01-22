@@ -32,8 +32,8 @@ public class LayerFunctionality : MonoBehaviour {
     private void SetupClickListeners()
     {
         // Подключить методы смены слоя к кнопкам смены слоев
-        Utilities.FindButtonAndAddOnClickListener("+ LayerButton", LayerUp);
-        Utilities.FindButtonAndAddOnClickListener("- LayerButton", LayerDown);
+         Utilities.FindButtonAndAddOnClickListener("+LayerButton", LayerUp);
+        Utilities.FindButtonAndAddOnClickListener("-LayerButton", LayerDown);
 
         // Подключить метод ToggleOnlyShowCurrentLayer к OnlyShowCurrentLayerToggle
         _layerEyeImage = GameObject.Find("LayerEyeImage");

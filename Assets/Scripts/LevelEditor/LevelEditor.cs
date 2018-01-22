@@ -20,7 +20,7 @@ public class LevelEditor : MonoBehaviour {
 
     // Экземпляр LevelEditor
     public static LevelEditor Instance;
-
+    public LevelData levelData;
     // Родительский объект интерфейса редактора уровней как prefab
     public GameObject LevelEditorUiPrefab;
 
@@ -31,7 +31,7 @@ public class LevelEditor : MonoBehaviour {
     //public GameObject FileBrowserPrefab;
 
     // Расширение файла, используемое для сохранения и загрузки уровней
-    public string FileExtension = "lvl";
+    public string FileExtension = "json";
 
     // Метод определения фрагментов при сохранении
     public TileIdentificationMethod SaveMethod;
@@ -119,7 +119,7 @@ public class LevelEditor : MonoBehaviour {
 			_tiles = new List<Transform>();
 			Debug.LogError("No valid Tileset found");
 		} else {
-			_tiles = tileList.Tiles;
+			_tiles = tileList.tiles;
 		}
 	}
 
@@ -294,6 +294,11 @@ public class LevelEditor : MonoBehaviour {
 		}
         // Установите значение для представления внутреннего уровня
         _level[xPos, yPos, zPos] = value;
+        TileData tileData = new TileData(value+1);
+        tileData.x = xPos;
+        tileData.y = Height- yPos -1;
+       // Debug.Log(value);
+          levelData.layers[zPos].dataLayer.Insert((int)(tileData.y*Width+tileData.x), tileData);
         // Если значение не пустое, установите его на правильную плиту
         if (value != Empty) {
         BuildBlock(GetTiles()[value], xPos, yPos, zPos, GetLayerParent(zPos).transform);
@@ -341,11 +346,16 @@ public class LevelEditor : MonoBehaviour {
     // Метод создания пустого уровня путем прокрутки по высоте, ширине и слоям
     // и установив значение в EMPTY (-1)
     private int[,,] CreateEmptyLevel() {
+    
     int[,,] emptyLevel = new int[Width, Height, Layers];
 		for (int x = 0; x < Width; x++) {
 			for (int y = 0; y < Height; y++) {
 				for (int z = 0; z < Layers; z++) {
 					emptyLevel[x, y, z] = Empty;
+                    TileData tileData = new TileData(0);
+                    levelData.layers[z].dataLayer.Add(tileData);
+                    levelData.layers[z].heightLayer = Height;
+                    levelData.layers[z].widthLayer = Width;
 				}
 			}
 		}

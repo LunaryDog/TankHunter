@@ -5,12 +5,9 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 public class LoadFunctionality : MonoBehaviour {
-
+    
 	private LevelEditor _levelEditor;
-
-	// The file browser
-	//private GameObject _fileBrowserPrefab;
-
+    
 	// The file extension of the file to load
 	private string _fileExtension;
 
@@ -23,13 +20,12 @@ public class LoadFunctionality : MonoBehaviour {
 	// The tiles used to build the level
 	private List<Transform> _tiles;
 
-	// ----- SETUP -----
-
+	
 	public void Setup(GameObject fileBrowserPrefab, string fileExtension, TileIdentificationMethod loadMethod,
 		List<Transform> tiles) {
 		_levelEditor = LevelEditor.Instance;
 		//_fileBrowserPrefab = fileBrowserPrefab;
-		_fileExtension = fileExtension.Trim() == "" ? "lvl" : fileExtension;
+		_fileExtension = fileExtension.Trim() == "" ? "json" : fileExtension;
 		_loadMethod = loadMethod;
 		_tiles = tiles;
 		SetupClickListeners();
@@ -37,10 +33,8 @@ public class LoadFunctionality : MonoBehaviour {
 
 	// Hook up Save/Load Level method to Save/Load button
 	private void SetupClickListeners() {
-		Utilities.FindButtonAndAddOnClickListener("LoadButton", OpenFileBrowser);
+		//Utilities.FindButtonAndAddOnClickListener("LoadButton", OpenFileBrowser);
 	}
-
-	// ----- PUBLIC METHODS -----
 
 	// Load from a file using a path
 	public void LoadLevelUsingPath(string path) {

@@ -37,7 +37,7 @@ public string RelativePath = "Resources/Levels/level.json";
     //Устанавливаем сборку TileLevel и устанавливаем переменную _tile
     private void Awake() {
 		_tileLevelParent = GameObject.Find("TileLevel") ?? new GameObject("TileLevel");
-		_tiles = _tileset.Tiles;
+		_tiles = _tileset.tiles;
 	}
     private void Start()
     {

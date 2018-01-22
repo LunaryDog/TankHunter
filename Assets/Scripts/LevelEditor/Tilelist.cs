@@ -4,7 +4,7 @@ using UnityEngine;
 public class Tilelist : MonoBehaviour {
     
     // Список тайлов, которые пользователь может использовать для создания карт   
-    public List<Transform> Tiles;
+    public List<Transform> tiles;
 
 }
 
