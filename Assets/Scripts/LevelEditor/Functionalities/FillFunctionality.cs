@@ -1,106 +1,90 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-//using Common.Scripts;
+public class FillFunctionality : MonoBehaviour {
 
-//namespace GracesGames._2DTileMapLevelEditor.Scripts.Functionalities {
+	private LevelEditor _levelEditor;
 
-	public class FillFunctionality : MonoBehaviour {
+    // Объекты пользовательского интерфейса для отображения режима карандаша / заливки
+    private Texture2D _fillCursor;
 
-		// ----- PRIVATE VARIABLES -----
+    // Boolean, чтобы определить, использовать ли режим заливки или режим карандаша
+    private bool _fillMode;
 
-		// The level editor
-		private LevelEditor _levelEditor;
+    // Объекты пользовательского интерфейса для отображения режима карандаша / заливки
+    private Image _pencilModeButtonImage;
 
-		// UI objects to display pencil/fill mode
-		private Texture2D _fillCursor;
+    private Image _fillModeButtonImage;
 
-		// Boolean to determine whether to use fill mode or pencil mode
-		private bool _fillMode;
+    // Цвет для отображения отключенного режима
+    private static readonly Color32 DisabledColor = new Color32(150, 150, 150, 255);
 
-		// UI objects to display pencil/fill mode
-		private Image _pencilModeButtonImage;
+    public void Setup(Texture2D fillCursor) {
+		_levelEditor = LevelEditor.Instance;
+		_fillCursor = fillCursor;
+		SetupClickListeners();
+        // Изначально отключить режим заполнения
+        DisableFillMode();
+    }
 
-		private Image _fillModeButtonImage;
+    // Подключить методы режима к кнопке режима
+    private void SetupClickListeners() {
+        // Подключить метод EnablePencilMode к PencilButton
+        GameObject pencilModeButton = Utilities.FindButtonAndAddOnClickListener("PencilButton", DisableFillMode);
+        _pencilModeButtonImage = pencilModeButton.GetComponent<Image>();
+        // Подключить метод EnableFillMode к FillButton
+        GameObject fillModeButton = Utilities.FindButtonAndAddOnClickListener("FillButton", EnableFillMode);
+        _fillModeButtonImage = fillModeButton.GetComponent<Image>();
+	}
 
-		// Color to display disabled mode
-		private static readonly Color32 DisabledColor = new Color32(150, 150, 150, 255);
-
-		// ----- SETUP -----
-
-		public void Setup(Texture2D fillCursor) {
-			_levelEditor = LevelEditor.Instance;
-			_fillCursor = fillCursor;
-			SetupClickListeners();
-			// Initally disable fill mode
-			DisableFillMode();
+	private void Update() {
+        // Если нажать F, переключите FillMode;
+        if (Input.GetKeyDown(KeyCode.F)) {
+        ToggleFillMode();
 		}
+		
+		UpdateCursor();
+	}
 
-		// Hook up Mode methods to Mode button
-		private void SetupClickListeners() {
-			// Hook up EnablePencilMode method to PencilButton
-			GameObject pencilModeButton = Utilities.FindButtonAndAddOnClickListener("PencilButton", DisableFillMode);
-			_pencilModeButtonImage = pencilModeButton.GetComponent<Image>();
-			// Hook up EnableFillMode method to FillButton
-			GameObject fillModeButton = Utilities.FindButtonAndAddOnClickListener("FillButton", EnableFillMode);
-			_fillModeButtonImage = fillModeButton.GetComponent<Image>();
-		}
-
-		// ----- UPDATE -----
-
-		private void Update() {
-			// If F is pressed, toggle FillMode;
-			if (Input.GetKeyDown(KeyCode.F)) {
-				ToggleFillMode();
-			}
-			// Update the cursor
-			UpdateCursor();
-		}
-
-		// Update cursor (only show fill cursor on grid)
-		private void UpdateCursor() {
-			// Save the world point were the mouse clicked
-			Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			if (_fillMode && _levelEditor.ValidPosition((int) worldMousePosition.x, (int) worldMousePosition.y, 0)) {
-				// If valid position, set cursor to bucket
-				Cursor.SetCursor(_fillCursor, new Vector2(30, 25), CursorMode.Auto);
-			} else {
-				// Else reset cursor
-				Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-			}
-		}
-
-		// ----- PUBLIC METHODS -----
-
-		// Returns whether fill mode is enabled
-		public bool GetFillMode() {
-			return _fillMode;
-		}
-
-		// ----- PRIVATE METHODS -----
-
-		// Toggle fill mode (between fill and pencil mode)
-		private void ToggleFillMode() {
-			if (_fillMode) {
-				DisableFillMode();
-			} else {
-				EnableFillMode();
-			}
-		}
-
-		// Enable fill mode and update UI
-		private void EnableFillMode() {
-			_fillMode = true;
-			_fillModeButtonImage.GetComponent<Image>().color = Color.black;
-			_pencilModeButtonImage.GetComponent<Image>().color = DisabledColor;
-		}
-
-		// Disable fill mode and update UI and cursor
-		private void DisableFillMode() {
-			_fillMode = false;
-			Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-			_pencilModeButtonImage.GetComponent<Image>().color = Color.black;
-			_fillModeButtonImage.GetComponent<Image>().color = DisabledColor;
+    // Обновить курсор (только показывать курсор на сетке)
+    private void UpdateCursor() {
+        // Сохранить точку мира, щелкнув мышью
+        Vector3 worldMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (_fillMode && _levelEditor.ValidPosition((int) worldMousePosition.x, (int) worldMousePosition.y, 0)) {
+            // Если допустимая позиция, установите курсор на ведро
+            Cursor.SetCursor(_fillCursor, new Vector2(30, 25), CursorMode.Auto);
+        }
+        else {
+        // Повторный сброс курсора
+                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
 		}
 	}
-//}
+
+	public bool GetFillMode() {
+		return _fillMode;
+    }
+
+    // Переключить режим заполнения (между режимом заливки и карандаша)
+    private void ToggleFillMode() {
+		if (_fillMode) {
+			DisableFillMode();
+		} else {
+			EnableFillMode();
+		}
+    }
+
+    // Включить режим заполнения и обновить интерфейс
+        private void EnableFillMode() {
+		_fillMode = true;
+		_fillModeButtonImage.GetComponent<Image>().color = Color.black;
+		_pencilModeButtonImage.GetComponent<Image>().color = DisabledColor;
+	}
+
+    // Отключить режим заполнения и обновить интерфейс и курсор
+    private void DisableFillMode() {
+    _fillMode = false;
+		Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+		_pencilModeButtonImage.GetComponent<Image>().color = Color.black;
+		_fillModeButtonImage.GetComponent<Image>().color = DisabledColor;
+	}
+}

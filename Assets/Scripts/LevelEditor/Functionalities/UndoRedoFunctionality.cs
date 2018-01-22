@@ -1,92 +1,79 @@
 ﻿using UnityEngine;
 
-//using Common.Scripts;
+public class UndoRedoFunctionality : MonoBehaviour {
 
-//namespace GracesGames._2DTileMapLevelEditor.Scripts.Functionalities {
+	private LevelEditor _levelEditor;
 
-	public class UndoRedoFunctionality : MonoBehaviour {
+    // Стеки для отслеживания отмены и повтора
+    private FiniteStack<int[,,]> _undoStack;
 
-		// ----- PRIVATE VARIABLES -----
+	private FiniteStack<int[,,]> _redoStack;
 
-		// The level editor
-		private LevelEditor _levelEditor;
 
-		// Stacks to keep track for undo and redo feature
-		private FiniteStack<int[,,]> _undoStack;
+	public void Setup() {
+		_levelEditor = LevelEditor.Instance;
+		_undoStack = new FiniteStack<int[,,]>();
+		_redoStack = new FiniteStack<int[,,]>();
+		SetupClickListeners();
+	}
 
-		private FiniteStack<int[,,]> _redoStack;
+    // Подключить метод отмены / повтора к кнопке отмены / повтора
+    private void SetupClickListeners() {
+        Utilities.FindButtonAndAddOnClickListener("UndoButton", Undo);
+		Utilities.FindButtonAndAddOnClickListener("RedoButton", Redo);
+	}
 
-		// ----- SETUP -----
-
-		public void Setup() {
-			_levelEditor = LevelEditor.Instance;
-			_undoStack = new FiniteStack<int[,,]>();
-			_redoStack = new FiniteStack<int[,,]>();
-			SetupClickListeners();
+	private void Update() {
+		
+		if (Input.GetKeyDown(KeyCode.Z)) {
+			Undo();
 		}
-
-		// Hook up Undo/Redo method to Undo/Redo button
-		private void SetupClickListeners() {
-			Utilities.FindButtonAndAddOnClickListener("UndoButton", Undo);
-			Utilities.FindButtonAndAddOnClickListener("RedoButton", Redo);
-		}
-
-		// ----- UPDATE -----
-
-		private void Update() {
-			// If Z is pressed, undo action
-			if (Input.GetKeyDown(KeyCode.Z)) {
-				Undo();
-			}
-			// If Y is pressed, redo action
-			if (Input.GetKeyDown(KeyCode.Y)) {
-				Redo();
-			}
-		}
-
-		// ----- PUBLIC METHODS -----
-
-		// Reset undo and redo stacks
-		public void Reset() {
-			_undoStack = new FiniteStack<int[,,]>();
-			_redoStack = new FiniteStack<int[,,]>();
-		}
-
-		// Push a level to the undo stack thereby saving it's state
-		public void PushLevel(int[,,] level) {
-			_undoStack.Push(level.Clone() as int[,,]);
-		}
-
-		// ----- PRIVATE METHODS -----
-
-		// Load last saved level from undo stack and rebuild level
-		private void Undo() {
-			// See if there is anything on the undo stack
-			if (_undoStack.Count > 0) {
-				// If so, push it to the redo stack
-				_redoStack.Push(_levelEditor.GetLevel());
-			}
-			// Get the last level entry
-			int[,,] undoLevel = _undoStack.Pop();
-			if (undoLevel != null) {
-				// Set the level to the previous state
-				_levelEditor.SetLevel(undoLevel);
-			}
-		}
-
-		// Load last saved level from redo tack and rebuild level
-		private void Redo() {
-			// See if there is anything on the redo stack
-			if (_redoStack.Count > 0) {
-				// If so, push it to the redo stack
-				_undoStack.Push(_levelEditor.GetLevel());
-			}
-			// Get the last level entry
-			int[,,] redoLevel = _redoStack.Pop();
-			if (redoLevel != null) {
-				// Set level to the previous state
-				_levelEditor.SetLevel(redoLevel);
-			}
+		
+		if (Input.GetKeyDown(KeyCode.Y)) {
+			Redo();
 		}
 	}
-//}
+
+
+    // Подключить метод отмены / повтора к кнопке отмены / повтора
+    public void Reset() {
+    _undoStack = new FiniteStack<int[,,]>();
+		_redoStack = new FiniteStack<int[,,]>();
+	}
+
+    // Нажимаем уровень в стек отмены, тем самым сохраняя его состояние
+    public void PushLevel(int[,,] level) {
+    _undoStack.Push(level.Clone() as int[,,]);
+    }
+
+
+    // Нажимаем уровень в стек отмены, тем самым сохраняя его состояние
+    private void Undo() {
+        // Посмотрим, есть ли что-нибудь в стеке отмены
+        if (_undoStack.Count > 0) {
+            // Если это так, перетащите его в стек повтора
+            _redoStack.Push(_levelEditor.GetLevel());
+        }
+        // Получить запись последнего уровня
+        int[,,] undoLevel = _undoStack.Pop();
+		if (undoLevel != null) {
+            // Установите уровень в предыдущее состояние
+            _levelEditor.SetLevel(undoLevel);
+        }
+    }
+
+    // Загружаем последний сохраненный уровень из уровня повтора и уровня восстановления
+    private void Redo() {
+        // Посмотрим, есть ли что-нибудь в стеке повтора
+        if (_redoStack.Count > 0) {
+            // Если это так, перетащите его в стек повтора
+            _undoStack.Push(_levelEditor.GetLevel());
+        }
+        // Получить запись последнего уровня
+        int[,,] redoLevel = _redoStack.Pop();
+        if (redoLevel != null) {
+            // Установите уровень в предыдущее состояние
+            _levelEditor.SetLevel(redoLevel);
+        }
+    }
+}

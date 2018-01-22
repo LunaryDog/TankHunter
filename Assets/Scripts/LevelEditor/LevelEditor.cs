@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
 
-// Enum used to define save type
+// Enum используется для определения типа сохранения
 public enum TileIdentificationMethod {
 	Index,
 	Name
@@ -18,85 +18,80 @@ public enum TileIdentificationMethod {
 [RequireComponent(typeof(GridFunctionality))]
 public class LevelEditor : MonoBehaviour {
 
-	// ----- PUBLIC VARIABLES -----
+    // Экземпляр LevelEditor
+    public static LevelEditor Instance;
 
-	// The instance of the LevelEditor
-	public static LevelEditor Instance;
+    // Родительский объект интерфейса редактора уровней как prefab
+    public GameObject LevelEditorUiPrefab;
 
-	// The parent object of the Level Editor UI as prefab
-	public GameObject LevelEditorUiPrefab;
+    // Объекты пользовательского интерфейса для отображения режима 
+    public Texture2D FillCursor;
 
-	// UI objects to display pencil/fill mode
-	public Texture2D FillCursor;
+    // FileBrowser Prefab, чтобы открыть Save- и LoadFilePanel
+    //public GameObject FileBrowserPrefab;
 
-	// FileBrowser Prefab to open Save- and LoadFilePanel
-	//public GameObject FileBrowserPrefab;
+    // Расширение файла, используемое для сохранения и загрузки уровней
+    public string FileExtension = "lvl";
 
-	// File extension used to save and load the levels
-	public string FileExtension = "lvl";
-		
-	// Method to identify the tiles when saving
-	public TileIdentificationMethod SaveMethod;
+    // Метод определения фрагментов при сохранении
+    public TileIdentificationMethod SaveMethod;
 
-	// Method to identify the tiles when loading
-	public TileIdentificationMethod LoadMethod;
+    // Метод идентификации фрагментов при загрузке
+    public TileIdentificationMethod LoadMethod;
 
-	// The X,Y and Z value of the map
-	public int Height = 14;
+    // Значения X, Y и Z карты
+    public int Height = 14;
 
-	public int Width = 16;
+    public int Width = 16;
 		
 	public int Layers = 10;
 
-	// The list of tiles the user can use to create maps
-	// Public so the user can add all user-created prefabs
-	public Tilelist tileList;
+    // Список плиток, которые пользователь может использовать для создания карт
+    // Public, чтобы пользователь мог добавлять все созданные пользователем сборные файлы
+    public Tilelist tileList;
 
-	// ----- PRIVATE VARIABLES -----
-		
-	// Whether this script is enabled (false, if the user closes the window)
-	private bool _scriptEnabled = true;
 
-	// Private variable to save the list of Transforms of the public Tileset
-	private List<Transform> _tiles;
+    // Включен ли этот скрипт (false, если пользователь закрывает окно)
+    private bool _scriptEnabled = true;
 
-	// The user interface script for the Level Editor
-	private UserInterface _uiScript;
+    // Закрытая переменная для сохранения списка Transforms открытого Tileset
+    private List<Transform> _tiles;
 
-	// Functionalities
-	private SaveFunctionality _saveFunctionality;
-	private LoadFunctionality _loadFunctionality;
+    // Сценарий пользовательского интерфейса для редактора уровней
+    private UserInterface _uiScript;
+
+    // Функциональные возможности
+    private SaveFunctionality _saveFunctionality;
+    private LoadFunctionality _loadFunctionality;
 	private UndoRedoFunctionality _undoRedoFunctionality;
 	private FillFunctionality _fillFunctionality;
 	private ZoomFunctionality _zoomFunctionality;
 	private LayerFunctionality _layerFunctionality;
 	private GridFunctionality _gridFunctionality;
 
-	// Define empty tile for map
-	private const int Empty = -1;
+    // Определение пустой плитки для карты
+    private const int Empty = -1;
 
-	// The internal representation of the level (int values)
-	private int[,,] _level;
+    // Внутреннее представление уровня (значения int)
+    private int[,,] _level;
 
-	// The external representation of the level (transforms)
-	private Transform[,,] _gameObjects;
+    // Внешнее представление уровня (преобразование)
+    private Transform[,,] _gameObjects;
 
-	// Used to store the currently selected tile index and layer
-	private int _selectedTileIndex = Empty;
+    // Используется для хранения текущего выбранного индекса и слоя плитки
+    private int _selectedTileIndex = Empty;
 
-	// GameObject as the parent for all the layers (to keep the Hierarchy window clean)
-	private GameObject _tileLevelParent;
+    // GameObject как родительский для всех слоев (чтобы окно Иерархия было чистым)
+    private GameObject _tileLevelParent;
 
-	// Dictionary as the parent for all the GameObjects per layer
-	private Dictionary<int, GameObject> _layerParents = new Dictionary<int, GameObject>();
+    // Словарь как родительский для всех GameObjects на слой
+    private Dictionary<int, GameObject> _layerParents = new Dictionary<int, GameObject>();
 
-	// Transform used to preview selected tile on map
-	private Transform _previewTile;
+    // Трансформация, используемая для предварительного просмотра выбранной плитки на карте
+    private Transform _previewTile;
 
-	// ----- SETUP -----
-
-	// Method to Instantiate the LevelEditor instance and keep it from destroying
-	void Awake() {
+    // Метод для создания экземпляра LevelEditor и предотвращения его уничтожения
+    void Awake() {
 		if (Instance == null) {
 			Instance = this;
 		} else if (Instance != this) {
@@ -104,20 +99,19 @@ public class LevelEditor : MonoBehaviour {
 		}
 	}
 
-	// Method to instantiate the dependencies and variables
-	void Start() {
-		// Validate the start values to prevent errors
-		ValidateStartValues();
+    // Метод для создания зависимостей и переменных
+    void Start() {
+        // Метод для создания зависимостей и переменных
+        ValidateStartValues();
 
-		// Setup elements
-		SetupLevel();
+        SetupLevel();
 		SetupUi();
 		SetupFunctionalities();
 	}
 
-	// Method that checks public variables values and sets them to valid defaults when necessary
-	private void ValidateStartValues() {
-		Width = Mathf.Clamp(Width, 1, Width);
+    // Метод, который проверяет значения общедоступных переменных и при необходимости устанавливает их действительными значениями по умолчанию
+    private void ValidateStartValues() {
+    Width = Mathf.Clamp(Width, 1, Width);
 		Height = Mathf.Clamp(Height, 1, Height);
 		Layers = Mathf.Clamp(Layers, 1, Layers);
 
@@ -129,34 +123,34 @@ public class LevelEditor : MonoBehaviour {
 		}
 	}
 
-	// Set variables and creates empty level with the correct size
-	private void SetupLevel() {
-		// Get or create the tileLevelParent object so we can make it our newly created objects' parent
-		_tileLevelParent = GameObject.Find("TileLevel") ?? new GameObject("TileLevel");
+    // Устанавливаем переменные и создаем пустой уровень с правильным размером
+    private void SetupLevel() {
+        // Получаем или создаем объект tileLevelParent, чтобы мы могли сделать его родительскими родителями вновь созданных объектов
+        _tileLevelParent = GameObject.Find("TileLevel") ?? new GameObject("TileLevel");
 
-		// Instantiate the level and gameObject to an empty level and empty Transform
-		_level = CreateEmptyLevel();
-		_gameObjects = new Transform[Width, Height, Layers];
+        // Имитировать уровень и gameObject на пустой уровень и пустую трансформацию
+        _level = CreateEmptyLevel();
+        _gameObjects = new Transform[Width, Height, Layers];
 	}
 
 	private void SetupUi() {
-		// Instantiate the LevelEditorUI
-		GameObject canvas = GameObject.Find("Canvas");
-		if (canvas != null) {
+        // Создание образа LevelEditorUI
+        GameObject canvas = GameObject.Find("Canvas");
+        if (canvas != null) {
 			GameObject levelEditorUi = Instantiate(LevelEditorUiPrefab, canvas.transform);
 			_uiScript = levelEditorUi.GetComponent<UserInterface>();
 		} else {
 			Debug.LogError("Make sure there is a canvas GameObject present in the Hierarcy (Create UI/Canvas)");
 		}
-		// Setup the UI
-		_uiScript.Setup();
-		// Set the SelectedTile to Empty (-1) and update the selectedTileImage
-		SetSelectedTile(Empty);
-	}
+        // Настройка пользовательского интерфейса
+        _uiScript.Setup();
+        // Устанавливаем SelectedTile в Empty (-1) и обновляем selectedTileImage
+        SetSelectedTile(Empty);
+    }
 
-	// Setup the different functionalities of the level editor
-	private void SetupFunctionalities() {
-		_saveFunctionality = GetComponent<SaveFunctionality>();
+    // Настройка различных функций редактора уровней
+    private void SetupFunctionalities() {
+    _saveFunctionality = GetComponent<SaveFunctionality>();
 		//_saveFunctionality.Setup(FileBrowserPrefab, FileExtension, SaveMethod, _tiles);
 			
 		_loadFunctionality = GetComponent<LoadFunctionality>();
@@ -176,31 +170,31 @@ public class LevelEditor : MonoBehaviour {
 
 		_gridFunctionality = GetComponent<GridFunctionality>();
 		_gridFunctionality.Setup(Width, Height);
-	}
-		
-	// ----- UPDATE -----
-		
-	// Handles input (creation and deletion on click)
-	private void Update() {
-		// Only continue if the script is enabled (level editor is open)
-		if (!_scriptEnabled) return;
-		// Update preview tile position given the current mouse position relative to the world point
-		UpdatePreviewTilePosition(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-		// Get the mouse position before click
-		Vector3 mousePos = Input.mousePosition;
-		// Set the position in the z axis to the opposite of the camera's so that the position is on the world
-		//  so ScreenToWorldPoint will give us valid values.
-		mousePos.z = Camera.main.transform.position.z * -1;
+    }
+
+
+    // Обработка ввода (создание и удаление при нажатии)
+    private void Update() {
+        // Продолжаем только если скрипт включен (редактор уровня открыт)
+        if (!_scriptEnabled) return;
+        // Обновить предварительную позицию плитки с учетом текущей позиции мыши относительно мировой точки
+        UpdatePreviewTilePosition(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        // Получить позицию мыши перед нажатием
+        Vector3 mousePos = Input.mousePosition;
+        // Установите положение по оси z в противоположную сторону камеры, чтобы положение находилось в мире
+        // поэтому ScreenToWorldPoint предоставит нам действительные значения.
+        mousePos.z = Camera.main.transform.position.z * -1;
+        mousePos.z = Camera.main.transform.position.z * -1;
 		Vector3 pos = Camera.main.ScreenToWorldPoint(mousePos);
-		// Deal with the mouse being not exactly on a block
-		int posX = Mathf.FloorToInt(pos.x + .5f);
-		int posY = Mathf.FloorToInt(pos.y + .5f);
-		// Handle input only when a valid position is clicked
-		HandleInput(posX, posY);
-	}
-		
-	// Update previewTile position
-	private void UpdatePreviewTilePosition(Vector3 worldMousePosition) {
+        // Поделитесь с мышью не точно на блоке
+        int posX = Mathf.FloorToInt(pos.x + .5f);
+        int posY = Mathf.FloorToInt(pos.y + .5f);
+        // Обработка ввода только при нажатии на действительную позицию
+        HandleInput(posX, posY);
+    }
+
+    // Обновить предварительный просмотр
+    private void UpdatePreviewTilePosition(Vector3 worldMousePosition) {
 		if (_previewTile != null) {
 			if (ValidPosition((int) worldMousePosition.x, (int) worldMousePosition.y, 0)) {
 				_previewTile.position =
@@ -208,47 +202,47 @@ public class LevelEditor : MonoBehaviour {
 			}
 		}
 	}
-		
-	// Check for mouse button clicks and handle accordingly
-	private void HandleInput(int posX, int posY) {
-		int selectedLayer = _layerFunctionality.GetSelectedLayer();
+
+    // Проверяем щелчки мыши и обрабатываем соответственно
+    private void HandleInput(int posX, int posY) {
+    int selectedLayer = _layerFunctionality.GetSelectedLayer();
 		if (!ValidPosition(posX, posY, selectedLayer)) {
 			return;
 		}
-		// Left click - Create object (check hotControl and not over UI)
-		if (Input.GetMouseButton(0) && GUIUtility.hotControl == 0 && !EventSystem.current.IsPointerOverGameObject()) {
-			// Only allow additions if the selectedTile is not EMPTY (cannot add/fill nothing)
-			if (_selectedTileIndex != Empty) {
-				// If fill mode, fill, else click position (pencil mode)
-				if (_fillFunctionality.GetFillMode()) {
-					Fill(posX, posY, selectedLayer, true);
+        // Щелкните левой кнопкой мыши - создайте объект (проверьте hotControl, а не интерфейс)
+        if (Input.GetMouseButton(0) && GUIUtility.hotControl == 0 && !EventSystem.current.IsPointerOverGameObject()) {
+            // Разрешаем только добавления, если selectedTile не является ПУСТОЙ (не может добавлять / заполнять ничего)
+            if (_selectedTileIndex != Empty) {
+                // Если режим заполнения, заполнение, другое положение щелчка (режим карандаша)
+                if (_fillFunctionality.GetFillMode()) {
+                Fill(posX, posY, selectedLayer, true);
 				} else {
 					ClickedPosition(posX, posY, selectedLayer);
 				}
 			}
 		}
-		// Right clicking - Delete object (check hotControl and not over UI)
-		if (Input.GetMouseButton(1) && GUIUtility.hotControl == 0 && !EventSystem.current.IsPointerOverGameObject()) {
-			// If we hit something (!= EMPTY), we want to destroy the object and update the gameObject array and level array
-			if (_level[posX, posY, selectedLayer] != Empty) {
-				DestroyBlock(posX, posY, selectedLayer);
+        // Щелкните правой кнопкой мыши - Удалить объект (проверьте hotControl, а не интерфейс)
+        if (Input.GetMouseButton(1) && GUIUtility.hotControl == 0 && !EventSystem.current.IsPointerOverGameObject()) {
+            // Если мы ударим что-то (! = EMPTY), мы хотим уничтожить объект и обновить массив gameObject и массив уровней
+            if (_level[posX, posY, selectedLayer] != Empty) {
+            DestroyBlock(posX, posY, selectedLayer);
 				_level[posX, posY, selectedLayer] = Empty;
 			}
-			// If we hit nothing and previewTile is null, remove it
-			else if (_previewTile != null) {
-				DestroyImmediate(_previewTile.gameObject);
-				// Set selected tile and image to EMPTY
-				SetSelectedTile(Empty);
+            // Если мы ничего не удалим, а previewTile - null, удалите его
+            else if (_previewTile != null) {
+            DestroyImmediate(_previewTile.gameObject);
+                // Установите выбранную плитку и изображение в ПУСТОЙ
+                SetSelectedTile(Empty);
+                SetSelectedTile(Empty);
 			}
 		}
 	}
-		
-	// ----- PUBLIC METHODS -----
-		
-	// Method to switch selectedTile on tile selection
-	// Used by clickListeners in the UserInterface script
-	public void ButtonClick(int tileIndex) {
-		SetSelectedTile(tileIndex);
+
+
+    // Метод для переключения selectedTile на выбор плитки
+    // Используется clickListeners в скрипте UserInterface
+    public void ButtonClick(int tileIndex) {
+    SetSelectedTile(tileIndex);
 		if (_previewTile != null) {
 			DestroyImmediate(_previewTile.gameObject);
 		}
@@ -258,94 +252,96 @@ public class LevelEditor : MonoBehaviour {
 		foreach (Collider2D c in _previewTile.GetComponents<Collider2D>()) {
 			c.enabled = false;
 		}
-	}
-		
-	// Returns whether the script is enabled (e.g. whether input is registered) 
-	public bool GetScriptEnabled() {
-		return _scriptEnabled;
-	}
+    }
 
-	// Returns the static representation of an EMPTY tile
-	public static int GetEmpty() {
+    // Возвращает, включен ли сценарий (например, зарегистрирован ли вход)
+    public bool GetScriptEnabled() {
+		return _scriptEnabled;
+    }
+
+    // Возвращает статическое представление элемента EMPTY
+    public static int GetEmpty() {
 		return Empty;
-	}
-		
-	// Returns the level
-	public int[,,] GetLevel() {
+    }
+
+    // Возвращает уровень
+    public int[,,] GetLevel() {
 		return _level;
 	}
 
-	// Updates the level (internal and external representation)
-	public void SetLevel(int[,,] newLevel) {
-		_level = newLevel;
+    // Метод определения для заданных x, y, z, является ли позиция действительной (в пределах ширины, высоты и слоев)
+    // Обновляет уровень (внутреннее и внешнее представление)
+    public void SetLevel(int[,,] newLevel) {
+    _level = newLevel;
 		RebuildGameObjects();
-	}
-		
-	// Returns the array of Tiles
-	public List<Transform> GetTiles() {
+    }
+
+    // Возвращает массив Tiles
+    public List<Transform> GetTiles() {
 		return _tiles;
-	}
-		
-	// Method to determine for a given x, y, z, whether the position is valid (within Width, Height and Layers)
-	public bool ValidPosition(int x, int y, int z) {
+    }
+
+    // Метод определения для заданных x, y, z, является ли позиция действительной (в пределах ширины, высоты и слоев)
+    public bool ValidPosition(int x, int y, int z) {
 		return x >= 0 && x < Width && y >= 0 && y < Height && z >= 0 && z < Layers;
-	}
-		
-	// Method that creates a GameObject on click
-	public void CreateBlock(int value, int xPos, int yPos, int zPos) {
-		// Return on invalid positions
-		if (!ValidPosition(xPos, yPos, zPos)) {
-			return;
+    }
+
+    // Метод, который создает объект GameObject при щелчке
+    public void CreateBlock(int value, int xPos, int yPos, int zPos) {
+        // Возвращение на недопустимые позиции
+        if (!ValidPosition(xPos, yPos, zPos)) {
+        return;
 		}
-		// Set the value for the internal level representation
-		_level[xPos, yPos, zPos] = value;
-		// If the value is not empty, set it to the correct tile
-		if (value != Empty) {
-			BuildBlock(GetTiles()[value], xPos, yPos, zPos, GetLayerParent(zPos).transform);
+        // Установите значение для представления внутреннего уровня
+        _level[xPos, yPos, zPos] = value;
+        // Если значение не пустое, установите его на правильную плиту
+        if (value != Empty) {
+        BuildBlock(GetTiles()[value], xPos, yPos, zPos, GetLayerParent(zPos).transform);
 		}
-	}
-		
-	// UpdateLayerVisibility called by the LoadFunctionality to remove dependency on LayerFunctionality script
-	public void UpdateLayerVisibility() {
-		_layerFunctionality.UpdateLayerVisibility();
 	}
 
-	// Method that enables/disables all layerParents
-	public void ToggleLayerParent(int layer, bool show) {
-		GetLayerParent(layer).SetActive(show);
+    // UpdateLayerVisibility, вызываемый функцией LoadFunctionality для удаления зависимости от скрипта LayerFunctionality
+    public void UpdateLayerVisibility() {
+    _layerFunctionality.UpdateLayerVisibility();
 	}
 
-	// Method that enables/disables all layerParents
-	public void ToggleLayerParents(bool show) {
+    // Метод, который включает / отключает все слои.
+    public void ToggleLayerParent(int layer, bool show) {
+    GetLayerParent(layer).SetActive(show);
+    }
+
+    // Метод, который включает / отключает все слои.
+    public void ToggleLayerParents(bool show) {
 		foreach (GameObject layerParent in _layerParents.Values) {
 			layerParent.SetActive(show);
 		}
 	}
-		
-	// ----- PRIVATE METHODS -----
-		
-	// Method that resets the GameObjects and layers
-	private void ResetTransformsAndLayers() {
-		// Destroy everything inside our currently level that is created dynamically
-		foreach (Transform child in _tileLevelParent.transform) {
-			Destroy(child.gameObject);
+
+
+    // Метод, который сбрасывает GameObjects и слои
+    private void ResetTransformsAndLayers()
+    {
+        // Уничтожьте все внутри нашего текущего уровня, который создается динамически
+        foreach (Transform child in _tileLevelParent.transform) {
+        Destroy(child.gameObject);
 		}
 		_layerParents = new Dictionary<int, GameObject>();
 	}
-		
-	// Method that resets the level and GameObject before a load
-	public void ResetBeforeLoad() {
-		ResetTransformsAndLayers();
-		// Reset the internal representation
-		_level = CreateEmptyLevel();
-		// Reset undo and redo stacks
-		_undoRedoFunctionality.Reset();
-	}
-		
-	// Method to create an empty level by looping through the Height, Width and Layers 
-	// and setting the value to EMPTY (-1)
-	private int[,,] CreateEmptyLevel() {
-		int[,,] emptyLevel = new int[Width, Height, Layers];
+
+    // Метод, который сбрасывает уровень и GameObject перед загрузкой
+    public void ResetBeforeLoad()
+    {
+        ResetTransformsAndLayers();
+        // Сброс внутреннего представления
+        _level = CreateEmptyLevel();
+        // Сброс настроек отмены и повтора
+        _undoRedoFunctionality.Reset();
+    }
+
+    // Метод создания пустого уровня путем прокрутки по высоте, ширине и слоям
+    // и установив значение в EMPTY (-1)
+    private int[,,] CreateEmptyLevel() {
+    int[,,] emptyLevel = new int[Width, Height, Layers];
 		for (int x = 0; x < Width; x++) {
 			for (int y = 0; y < Height; y++) {
 				for (int z = 0; z < Layers; z++) {
@@ -357,24 +353,24 @@ public class LevelEditor : MonoBehaviour {
 	}
 		
 	private void BuildBlock(Transform toCreate, int xPos, int yPos, int zPos, Transform parent) {
-		//Create the object we want to create
-		Transform newObject = Instantiate(toCreate, new Vector3(xPos, yPos, toCreate.position.z), Quaternion.identity);
-		//Give the new object the same name as our tile prefab
-		newObject.name = toCreate.name;
-		// Set the object's parent to the layer parent variable so it doesn't clutter our Hierarchy
-		newObject.parent = parent;
-		// Add the new object to the gameObjects array for correct administration
-		_gameObjects[xPos, yPos, zPos] = newObject;
-	}
-		
-	private void DestroyBlock(int posX, int posY, int posZ) {
+        // Создаем объект, который хотим создать.
+        Transform newObject = Instantiate(toCreate, new Vector3(xPos, yPos, toCreate.position.z), Quaternion.identity);
+        // Дайте новому объекту то же имя, что и наш сборный плит
+        newObject.name = toCreate.name;
+        // Установите родительский объект в родительскую переменную слоя, чтобы он не загромождал нашу иерархию
+        newObject.parent = parent;
+        // Добавление нового объекта в массив gameObjects для правильного администрирования
+        _gameObjects[xPos, yPos, zPos] = newObject;
+    }
+
+    private void DestroyBlock(int posX, int posY, int posZ) {
 		DestroyImmediate(_gameObjects[posX, posY, posZ].gameObject);
 	}
-		
-	// Rebuild the level (e.g. after using undo/redo)
-	// Reset the Transforms and Layer, then loop trough level array and create blocks
-	private void RebuildGameObjects() {
-		ResetTransformsAndLayers();
+
+    // Восстановить уровень (например, после использования отмены / повтора)
+    // Сброс Transforms и Layer, затем зациклируем массив уровня и создаем блоки
+    private void RebuildGameObjects() {
+    ResetTransformsAndLayers();
 		for (int x = 0; x < Width; x++) {
 			for (int y = 0; y < Height; y++) {
 				for (int z = 0; z < Layers; z++) {
@@ -385,50 +381,53 @@ public class LevelEditor : MonoBehaviour {
 			}
 		}
 	}
-		
-	// Fill from position recursively. Only fill if the position is valid and empty
-	private void Fill(int posX, int posY, int selectedLayer, bool undoPush) {
-		// Check valid and empty
-		if (ValidPosition(posX, posY, selectedLayer) && _level[posX, posY, selectedLayer] == Empty) {
-			if (undoPush) {
-				// Push level on undoStack since it is going to change
-				_undoRedoFunctionality.PushLevel(_level);
-			}
-			// Create a block on the position
-			CreateBlock(_selectedTileIndex, posX, posY, selectedLayer);
-			// Fill x+1, x-1, y+1, y-1
-			Fill(posX + 1, posY, selectedLayer, false);
-			Fill(posX - 1, posY, selectedLayer, false);
+
+    // Заполнять из позиции рекурсивно. Только заполнять, если позиция действительна и пуста
+    private void Fill(int posX, int posY, int selectedLayer, bool undoPush)
+    {
+        // Проверяем действительные и пустые
+        if (ValidPosition(posX, posY, selectedLayer) && _level[posX, posY, selectedLayer] == Empty)
+        {
+            if (undoPush)
+            {
+                // Нажимаем уровень на undoStack, так как он изменится
+                _undoRedoFunctionality.PushLevel(_level);
+            }
+            // Создаем блок в позиции
+            CreateBlock(_selectedTileIndex, posX, posY, selectedLayer);
+            // Заполнение x + 1, x-1, y + 1, y-1
+            Fill(posX + 1, posY, selectedLayer, false);
+            Fill(posX - 1, posY, selectedLayer, false);
 			Fill(posX, posY + 1, selectedLayer, false);
 			Fill(posX, posY - 1, selectedLayer, false);
 		}
-	}
-		
-	// Clicked on position, so check if it is the same, and (destroy and) build if neccesary
-	private void ClickedPosition(int posX, int posY, int selectedLayer) {
-		// If it's the same, just keep the previous one and do nothing, else (destroy and) build
-		if (_level[posX, posY, selectedLayer] != _selectedTileIndex) {
-			// Push level on undoStack since it is going to change
-			_undoRedoFunctionality.PushLevel(_level);
-			// If the position is not empty, destroy the the current element (using gameObjects array)
-			if (_level[posX, posY, selectedLayer] != Empty) {
-				DestroyBlock(posX, posY, selectedLayer);
+    }
+
+    // Нажмите на позицию, так что проверьте, не совпадают ли они и (уничтожьте и), если необходимо
+    private void ClickedPosition(int posX, int posY, int selectedLayer) {
+        // Если это то же самое, просто сохраните предыдущий и ничего не сделайте, else (destroy and) build
+        if (_level[posX, posY, selectedLayer] != _selectedTileIndex) {
+            // Нажимаем уровень на undoStack, так как он изменится
+            _undoRedoFunctionality.PushLevel(_level);
+            // Если позиция не пуста, уничтожьте текущий элемент (используя массив gameObjects)
+            if (_level[posX, posY, selectedLayer] != Empty) {
+            DestroyBlock(posX, posY, selectedLayer);
 			}
-			// Create the new game object
-			CreateBlock(_selectedTileIndex, posX, posY, selectedLayer);
-		}
-	}
+            // Создаем новый игровой объект
+            CreateBlock(_selectedTileIndex, posX, posY, selectedLayer);
+        }
+    }
 
-	// Method to set the selectedTile variable and the selectedTileImage
-	private void SetSelectedTile(int tileIndex) {
-		// Update selectedTile variable
-		_selectedTileIndex = tileIndex;
-		// If EMPTY, set selectedTileImage to noSelectedTileImage else to the corresponding Prefab tile image
-		_uiScript.SetSelectedTileImageSprite(tileIndex);
-	}
+    // Метод установки переменной selectedTile и selectedTileImage
+    private void SetSelectedTile(int tileIndex) {
+        // Обновить выбранную переменную tile
+        _selectedTileIndex = tileIndex;
+        // Если EMPTY, установите для selectedTileImage значение noSelectedTileImage else соответствующему изображению Prefab tile
+        _uiScript.SetSelectedTileImageSprite(tileIndex);
+    }
 
-	// Method that returns the parent GameObject for a layer
-	private GameObject GetLayerParent(int layer) {
+    // Метод, возвращающий родительский объект GameObject для слоя
+    private GameObject GetLayerParent(int layer) {
 		if (_layerParents.ContainsKey(layer))
 			return _layerParents[layer];
 		GameObject layerParent = new GameObject("Layer " + layer);
@@ -436,24 +435,24 @@ public class LevelEditor : MonoBehaviour {
 		_layerParents.Add(layer, layerParent);
 		return _layerParents[layer];
 	}
-		
-	// Enables/disables the level editor, (script, overlay and panel)
-	public void ToggleLevelEditor(bool enable) {
-		_scriptEnabled = enable;
+
+    // Включает / отключает редактор уровня (сценарий, наложение и панель)
+    public void ToggleLevelEditor(bool enable) {
+    _scriptEnabled = enable;
 		GridOverlay.Instance.enabled = enable;
 		_uiScript.ToggleLevelEditorPanel(enable);
 	}
 
-	// Close the level editor panel, test level mode
-	public void CloseLevelEditorPanel() {
+// Закрываем панель редактора уровня, режим тестового уровня
+    public void CloseLevelEditorPanel() {
 		_scriptEnabled = false;
 		_uiScript.ToggleLevelEditorPanel(false);
 		_uiScript.ToggleOpenButton(true);
 	}
 
-	// Open the level editor panel, level editor mode
-	public void OpenLevelEditorPanel() {
-		_uiScript.ToggleLevelEditorPanel(true);
+    // Откройте панель редактора уровня, режим редактора уровней
+    public void OpenLevelEditorPanel() {
+    _uiScript.ToggleLevelEditorPanel(true);
 		_uiScript.ToggleOpenButton(false);
 		_scriptEnabled = true;
 	}
