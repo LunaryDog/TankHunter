@@ -23,6 +23,8 @@ public class LevelEditor : MonoBehaviour {
     public LevelData levelData;
     // Родительский объект интерфейса редактора уровней как prefab
     public GameObject LevelEditorUiPrefab;
+    public LevelParser parser;
+    public LevelCreate creator;
 
     // Объекты пользовательского интерфейса для отображения режима 
     public Texture2D FillCursor;
@@ -39,6 +41,7 @@ public class LevelEditor : MonoBehaviour {
     // Метод идентификации фрагментов при загрузке
     public TileIdentificationMethod LoadMethod;
 
+    public int numberLevel = 1;
     // Значения X, Y и Z карты
     public int Height = 14;
 
@@ -46,6 +49,8 @@ public class LevelEditor : MonoBehaviour {
 		
 	public int Layers = 10;
 
+    public float tileSize = 1f;
+   
     // Список плиток, которые пользователь может использовать для создания карт
     // Public, чтобы пользователь мог добавлять все созданные пользователем сборные файлы
     public Tilelist tileList;
@@ -103,7 +108,7 @@ public class LevelEditor : MonoBehaviour {
     void Start() {
         // Метод для создания зависимостей и переменных
         ValidateStartValues();
-
+        SetupLevelData();
         SetupLevel();
 		SetupUi();
 		SetupFunctionalities();
@@ -122,11 +127,35 @@ public class LevelEditor : MonoBehaviour {
 			_tiles = tileList.tiles;
 		}
 	}
+    private void SetupLevelData()
+    {
+        levelData = new LevelData();
+        levelData.levelProperties = new LevelProperties(numberLevel, Height, Width, tileSize);        
+        
+        levelData.layers = new List<Layer>();
+        for (int i = 0; i < Layers; i ++)
+        {
+            Layer newLayer = new Layer("Layer " + i + 1);
+           // newLayer.nameLayer = "Layer " + i + 1;
+           // newLayer.dataLayer = new List<TileData>();          
+           // newLayer.visibleLayer = false;
+            levelData.layers.Add(newLayer);           
+        }
+    
+        levelData.tileSets = new List<TileSet>();
+        string pathTileSet = "";
+        TileSet newTileset = new TileSet(tileList.tiles.Count, pathTileSet, "Tiles");
+        levelData.tileSets.Add(newTileset);
+      //  levelData.tilesets[0] = new Tileset();
+      //  levelData.tilesets[0].tileCount = tileList.tiles.Count;
+      //  levelData.tilesets[0].tileWidth = (int)tileWidth;
+      //  levelData.tilesets[0].tileHeight = (int)tileHeight;
+    }
 
     // Устанавливаем переменные и создаем пустой уровень с правильным размером
     private void SetupLevel() {
         // Получаем или создаем объект tileLevelParent, чтобы мы могли сделать его родительскими родителями вновь созданных объектов
-        _tileLevelParent = GameObject.Find("TileLevel") ?? new GameObject("TileLevel");
+        _tileLevelParent = GameObject.Find("Level") ?? new GameObject("Level");
 
         // Имитировать уровень и gameObject на пустой уровень и пустую трансформацию
         _level = CreateEmptyLevel();
@@ -150,8 +179,8 @@ public class LevelEditor : MonoBehaviour {
 
     // Настройка различных функций редактора уровней
     private void SetupFunctionalities() {
-    _saveFunctionality = GetComponent<SaveFunctionality>();
-		//_saveFunctionality.Setup(FileBrowserPrefab, FileExtension, SaveMethod, _tiles);
+         _saveFunctionality = GetComponent<SaveFunctionality>();
+		_saveFunctionality.Setup( levelData, _tiles);
 			
 		_loadFunctionality = GetComponent<LoadFunctionality>();
 	//	_loadFunctionality.Setup(FileBrowserPrefab, FileExtension, LoadMethod, _tiles);
@@ -170,11 +199,14 @@ public class LevelEditor : MonoBehaviour {
 
 		_gridFunctionality = GetComponent<GridFunctionality>();
 		_gridFunctionality.Setup(Width, Height);
+
+        parser = GetComponent<LevelParser>();
+        creator = GetComponent<LevelCreate>();
     }
+   
 
-
-    // Обработка ввода (создание и удаление при нажатии)
-    private void Update() {
+        // Обработка ввода (создание и удаление при нажатии)
+        private void Update() {
         // Продолжаем только если скрипт включен (редактор уровня открыт)
         if (!_scriptEnabled) return;
         // Обновить предварительную позицию плитки с учетом текущей позиции мыши относительно мировой точки
@@ -353,12 +385,10 @@ public class LevelEditor : MonoBehaviour {
 				for (int z = 0; z < Layers; z++) {
 					emptyLevel[x, y, z] = Empty;
                     TileData tileData = new TileData(0);
-                    levelData.layers[z].dataLayer.Add(tileData);
-                    levelData.layers[z].heightLayer = Height;
-                    levelData.layers[z].widthLayer = Width;
+                    levelData.layers[z].dataLayer.Add(tileData);                  
 				}
 			}
-		}
+		}  
 		return emptyLevel;
 	}
 		

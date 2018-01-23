@@ -36,28 +36,33 @@ public class Player : SteeringAgent {
     
     // Use this for initialization
     void Start () {
-        animator = GetComponent<Animator>();
-        moveObject = new GameObject();
-        SteeringBound = GameBound.WorldBound;       
-        moveObject.transform.parent = gameObject.transform;
-        manager = transform.GetComponent<SteeringManager>();
-        arrive = transform.GetComponent<ArriveBehaviour>();
-        MaxVelocity = maxPlayerVelocity;
-        MaxAcceleration = maxPlayerAcceleration;
-        Size = sizePlayer;        
+        observer.AddListener(LevelBulderEvens.LOAD, this, StartAfteLoad);
         observer.SendMessage(PlayerEvents.HEALTH, health.Value);
         observer.SendMessage(PlayerEvents.RESISTANCE, resistance.Value);
         observer.AddListener(InputEvents.MOVE, this, MovePlayer);
         observer.AddListener(EnemyEvents.DAMAGE, this, GetDamage);
         observer.AddListener(TileEvens.DAMAGE, this, GetDamage);
         observer.AddListener(TileEvens.SLOW, this, GetDeceleration);
+        
+    }
+
+   void StartAfteLoad(ObservParam obj)
+    {
+        animator = GetComponent<Animator>();
+        moveObject = new GameObject();
+        SteeringBound = GameBound.WorldBound;
+        moveObject.transform.parent = gameObject.transform;
+        manager = transform.GetComponent<SteeringManager>();
+        arrive = transform.GetComponent<ArriveBehaviour>();
+        MaxVelocity = maxPlayerVelocity;
+        MaxAcceleration = maxPlayerAcceleration;
+        Size = sizePlayer;
         if (dieParticle)
         {
             dieParticle.Stop();
         }
     }
 
-   
     void FixedUpdate()
     {
         float v = Input.GetAxis("Vertical");
