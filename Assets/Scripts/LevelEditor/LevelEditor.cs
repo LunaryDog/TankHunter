@@ -329,8 +329,16 @@ public class LevelEditor : MonoBehaviour {
         TileData tileData = new TileData(value+1);
         tileData.x = xPos;
         tileData.y = Height- yPos -1;
-       // Debug.Log(value);
-          levelData.layers[zPos].dataLayer.Insert((int)(tileData.y*Width+tileData.x), tileData);
+        // Debug.Log(value);
+        levelData.layers[zPos].dataLayer.RemoveAt((int)(tileData.y * Width + tileData.x));
+        levelData.layers[zPos].dataLayer.Insert((int)(tileData.y*Width+tileData.x), tileData);
+       // Debug.Log((tileData.y * Width + tileData.x) + " " + (value + 1));
+       // string m = "";
+      //  foreach (TileData i in levelData.layers[zPos].dataLayer)
+      //  {
+        //    m = m + "; " + i.tileIndex;
+      //  }
+       // Debug.Log(m);
         // Если значение не пустое, установите его на правильную плиту
         if (value != Empty) {
         BuildBlock(GetTiles()[value], xPos, yPos, zPos, GetLayerParent(zPos).transform);

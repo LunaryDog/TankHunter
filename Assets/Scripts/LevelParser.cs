@@ -27,7 +27,7 @@ public class LevelParser : MonoBehaviour {
         int width = (int)levelsPropertiesJson.GetField("widthLevel").n;
         int height = (int)levelsPropertiesJson.GetField("heightLevel").n;
         float tile = levelsPropertiesJson.GetField("tileSize").n;
-        LevelProperties levelProperties = new LevelProperties(number, width, height, tile);
+        LevelProperties levelProperties = new LevelProperties(number, height, width, tile);
         return levelProperties;
     }
 
