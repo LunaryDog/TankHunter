@@ -6,9 +6,9 @@ public class GridOverlay : MonoBehaviour {
 	public static GridOverlay Instance;
 
     // Размеры сетки
-    private int _gridSizeX = 10;
+    private float _gridSizeX = 10;
 
-	private int _gridSizeY = 10;
+	private float _gridSizeY = 10;
 	private const int GridSizeZ = 0;
 
     // Шаги, предпринятые при перемещении сетки
@@ -44,12 +44,12 @@ public class GridOverlay : MonoBehaviour {
 	}
 
     // Изменяет размер ширины сетки
-    public void SetGridSizeX(int x) {
+    public void SetGridSizeX(float x) {
 		_gridSizeX = x;
 	}
 
     // Изменяет размер высоты сетки
-    public void SetGridSizeY(int y) {
+    public void SetGridSizeY(float y) {
 		_gridSizeY = y;
 	}
 

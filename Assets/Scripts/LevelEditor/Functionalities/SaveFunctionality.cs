@@ -37,25 +37,10 @@ public class SaveFunctionality : MonoBehaviour {
 		}
 	}
 
-
-    // Метод определения пустого слоя (пустые слои не сохраняются)
-    private bool EmptyLayer(int[,,] level, int width, int height, int layer, int empty) {
-    bool result = true;
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				if (level[x, y, layer] != empty) {
-					result = false;
-				}
-			}
-		}
-		return result;
-    }
-
-
-    // Сохранение уровня для переменной и файла с помощью FileBrowser и SaveLevelUsingPath
+    // Сохранение уровня 
     private void SaveLevel() { 
         
-        SaveLevelUsingPath(Application.streamingAssetsPath + "/Levels/");       
+        SaveLevelUsingPath(Application.dataPath + "/Resources/Levels/");       
     }
     
 

@@ -2,7 +2,6 @@
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-//namespace Common.Scripts {
     
 	public class Utilities : MonoBehaviour {
 
@@ -23,4 +22,3 @@ using UnityEngine.Events;
 			return button;
 		}
 	}
-//}

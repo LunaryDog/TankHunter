@@ -39,9 +39,9 @@ public class GridFunctionality : MonoBehaviour {
 	}
 
     // Определим размеры уровней как размеры для сетки
-    private void SetupGridOverlay(int width, int height) {
-    GridOverlay.Instance.SetGridSizeX(width);
-		GridOverlay.Instance.SetGridSizeY(height);
+    public void SetupGridOverlay(int width, int height) {
+        GridOverlay.Instance.SetGridSizeX(width );
+		GridOverlay.Instance.SetGridSizeY(height );
 	}
 
 

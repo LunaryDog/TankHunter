@@ -2,13 +2,6 @@
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
-
-// Enum используется для определения типа сохранения
-public enum TileIdentificationMethod {
-	Index,
-	Name
-}
-
 [RequireComponent(typeof(SaveFunctionality))]
 [RequireComponent(typeof(LoadFunctionality))]
 [RequireComponent(typeof(UndoRedoFunctionality))]
@@ -16,8 +9,8 @@ public enum TileIdentificationMethod {
 [RequireComponent(typeof(FillFunctionality))]
 [RequireComponent(typeof(LayerFunctionality))]
 [RequireComponent(typeof(GridFunctionality))]
-public class LevelEditor : MonoBehaviour {
-
+public class LevelEditor : BaseBehaviour {
+    
     // Экземпляр LevelEditor
     public static LevelEditor Instance;
     public LevelData levelData;
@@ -32,15 +25,7 @@ public class LevelEditor : MonoBehaviour {
     // FileBrowser Prefab, чтобы открыть Save- и LoadFilePanel
     //public GameObject FileBrowserPrefab;
 
-    // Расширение файла, используемое для сохранения и загрузки уровней
-    public string FileExtension = "json";
-
-    // Метод определения фрагментов при сохранении
-    public TileIdentificationMethod SaveMethod;
-
-    // Метод идентификации фрагментов при загрузке
-    public TileIdentificationMethod LoadMethod;
-
+  
     public int numberLevel = 1;
     // Значения X, Y и Z карты
     public int Height = 14;
@@ -49,7 +34,7 @@ public class LevelEditor : MonoBehaviour {
 		
 	public int Layers = 10;
 
-    public float tileSize = 1f;
+    public float tileSize = 1.28f;
    
     // Список плиток, которые пользователь может использовать для создания карт
     // Public, чтобы пользователь мог добавлять все созданные пользователем сборные файлы
@@ -97,6 +82,7 @@ public class LevelEditor : MonoBehaviour {
 
     // Метод для создания экземпляра LevelEditor и предотвращения его уничтожения
     void Awake() {
+        
 		if (Instance == null) {
 			Instance = this;
 		} else if (Instance != this) {
@@ -110,9 +96,10 @@ public class LevelEditor : MonoBehaviour {
         ValidateStartValues();
         SetupLevelData();
         SetupLevel();
-		SetupUi();
-		SetupFunctionalities();
-	}
+        SetupUi();
+        SetupFunctionalities();
+
+    }
 
     // Метод, который проверяет значения общедоступных переменных и при необходимости устанавливает их действительными значениями по умолчанию
     private void ValidateStartValues() {
@@ -151,6 +138,15 @@ public class LevelEditor : MonoBehaviour {
       //  levelData.tilesets[0].tileWidth = (int)tileWidth;
       //  levelData.tilesets[0].tileHeight = (int)tileHeight;
     }
+    public void UpdateEditorAfterLoad(LevelData newLevelData)
+    {
+        levelData = newLevelData;
+        numberLevel = levelData.levelProperties.numberLevel;
+        Width = levelData.levelProperties.widthLevel;
+        Height = levelData.levelProperties.heightLevel;
+        tileSize = levelData.levelProperties.tileSize;
+         _gridFunctionality.SetupGridOverlay(Width, Height);
+    }
 
     // Устанавливаем переменные и создаем пустой уровень с правильным размером
     private void SetupLevel() {
@@ -183,7 +179,7 @@ public class LevelEditor : MonoBehaviour {
 		_saveFunctionality.Setup( levelData, _tiles);
 			
 		_loadFunctionality = GetComponent<LoadFunctionality>();
-	//	_loadFunctionality.Setup(FileBrowserPrefab, FileExtension, LoadMethod, _tiles);
+		_loadFunctionality.Setup(_tiles);
 
 		_undoRedoFunctionality = GetComponent<UndoRedoFunctionality>();
 		_undoRedoFunctionality.Setup();
@@ -206,7 +202,7 @@ public class LevelEditor : MonoBehaviour {
    
 
         // Обработка ввода (создание и удаление при нажатии)
-        private void Update() {
+    private void Update() {
         // Продолжаем только если скрипт включен (редактор уровня открыт)
         if (!_scriptEnabled) return;
         // Обновить предварительную позицию плитки с учетом текущей позиции мыши относительно мировой точки
@@ -264,7 +260,7 @@ public class LevelEditor : MonoBehaviour {
             else if (_previewTile != null) {
             DestroyImmediate(_previewTile.gameObject);
                 // Установите выбранную плитку и изображение в ПУСТОЙ
-                SetSelectedTile(Empty);
+                
                 SetSelectedTile(Empty);
 			}
 		}
@@ -403,6 +399,7 @@ public class LevelEditor : MonoBehaviour {
 	private void BuildBlock(Transform toCreate, int xPos, int yPos, int zPos, Transform parent) {
         // Создаем объект, который хотим создать.
         Transform newObject = Instantiate(toCreate, new Vector3(xPos, yPos, toCreate.position.z), Quaternion.identity);
+        newObject.transform.localScale= new Vector3((1f / tileSize), (1f / tileSize), 1f);
         // Дайте новому объекту то же имя, что и наш сборный плит
         newObject.name = toCreate.name;
         // Установите родительский объект в родительскую переменную слоя, чтобы он не загромождал нашу иерархию
