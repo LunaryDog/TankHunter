@@ -32,8 +32,11 @@ public class Tile : BaseBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        observer.SendMessage(TileEvens.DAMAGE, damage);
-        observer.SendMessage(TileEvens.SLOW, friction_koeff);
+        if (collision.isTrigger == true)
+        {
+            observer.SendMessage(TileEvens.DAMAGE, damage);
+            observer.SendMessage(TileEvens.SLOW, friction_koeff);
+        }
     }
 
 

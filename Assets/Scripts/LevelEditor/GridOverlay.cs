@@ -6,9 +6,9 @@ public class GridOverlay : MonoBehaviour {
 	public static GridOverlay Instance;
 
     // Размеры сетки
-    private float _gridSizeX = 10;
+    private float gridSizeX = 10;
 
-	private float _gridSizeY = 10;
+	private float gridSizeY = 10;
 	private const int GridSizeZ = 0;
 
     // Шаги, предпринятые при перемещении сетки
@@ -24,9 +24,9 @@ public class GridOverlay : MonoBehaviour {
 	public float StartZ;
 
     // Смещения
-    private float _offsetX = -0.5f;
+    private float offsetX = -0.5f;
 
-	private float _offsetY = -0.5f;
+	private float offsetY = -0.5f;
 
     // Материал сетки
     public Material LineMaterial;
@@ -45,12 +45,12 @@ public class GridOverlay : MonoBehaviour {
 
     // Изменяет размер ширины сетки
     public void SetGridSizeX(float x) {
-		_gridSizeX = x;
+		gridSizeX = x;
 	}
 
     // Изменяет размер высоты сетки
     public void SetGridSizeY(float y) {
-		_gridSizeY = y;
+		gridSizeY = y;
 	}
 
     // Обновляет размеры на квадрат с помощью 0.5
@@ -65,22 +65,22 @@ public class GridOverlay : MonoBehaviour {
 
     // Перемещаем сетку на величину smallStep
     public void GridUp() {
-		_offsetY += SmallStep;
+		offsetY += SmallStep;
 	}
 
     // Переместите сетку вниз на величину smallStep
     public void GridDown() {
-		_offsetY -= SmallStep;
+		offsetY -= SmallStep;
 	}
 
     // Переместите сетку влево на величину smallStep
     public void GridLeft() {
-		_offsetX -= SmallStep;
+		offsetX -= SmallStep;
 	}
 
     // Переместите сетку справа на величину smallStep
     public void GridRight() {
-		_offsetX += SmallStep;
+		offsetX += SmallStep;
 	}
 
 	// Рисуем сетку
@@ -95,25 +95,25 @@ public class GridOverlay : MonoBehaviour {
 		GL.Color(MainColor);
 
 		//Слои
-		for (float j = 0; j <= _gridSizeY; j += LargeStep) {
+		for (float j = 0; j <= gridSizeY; j += LargeStep) {
             //X осевые линии
             for (float i = 0; i <= GridSizeZ; i += LargeStep) {
-				GL.Vertex3(StartX + _offsetX, j + _offsetY, StartZ + i);
-				GL.Vertex3(_gridSizeX + _offsetX, j + _offsetY, StartZ + i);
+				GL.Vertex3(StartX + offsetX, j + offsetY, StartZ + i);
+				GL.Vertex3(gridSizeX + offsetX, j + offsetY, StartZ + i);
 			}
 
             //Z осевые линии
-            for (float i = 0; i <= _gridSizeX; i += LargeStep) {
-				GL.Vertex3(StartX + i + _offsetX, j + _offsetY, StartZ);
-				GL.Vertex3(StartX + i + _offsetX, j + _offsetY, GridSizeZ);
+            for (float i = 0; i <= gridSizeX; i += LargeStep) {
+				GL.Vertex3(StartX + i + offsetX, j + offsetY, StartZ);
+				GL.Vertex3(StartX + i + offsetX, j + offsetY, GridSizeZ);
 			}
 		}
 
         //Y осевые линии
         for (float i = 0; i <= GridSizeZ; i += LargeStep) {
-			for (float k = 0; k <= _gridSizeX; k += LargeStep) {
-				GL.Vertex3(StartX + k + _offsetX, StartY + _offsetY, StartZ + i);
-				GL.Vertex3(StartX + k + _offsetX, _gridSizeY + _offsetY, StartZ + i);
+			for (float k = 0; k <= gridSizeX; k += LargeStep) {
+				GL.Vertex3(StartX + k + offsetX, StartY + offsetY, StartZ + i);
+				GL.Vertex3(StartX + k + offsetX, gridSizeY + offsetY, StartZ + i);
 			}
 		}
 

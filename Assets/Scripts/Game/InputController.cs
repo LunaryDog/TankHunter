@@ -30,9 +30,16 @@ public class InputController : BaseBehaviour {
             {"Right",     new Vector2(1,0)},
             {"LeftDown",  new Vector2(-1,-1)},
             {"Down",      new Vector2(0,-1)},
-            {"RightDown", new Vector2(1,-1)}
+            {"RightDown", new Vector2(1,-1)},
+            {"Stop",      new Vector2(0,0)}
         };
-       
+
+#if UNITY_EDITOR
+     this.enabled = false;
+#endif
+#if UNITY_EDITOR_WIN
+        this.enabled = false;
+# endif 
     }
 
     public void GetDirection (string dir)

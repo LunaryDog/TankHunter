@@ -30,11 +30,16 @@ public class GameManager : BaseBehaviour
 
     void Start()
     {
+        observer.AddListener(LevelBulderEvens.LOAD, this, StartAfterLoad);
         observer.AddListener(PlayerEvents.DIE, this, LoseGameMenu);
         observer.AddListener(EnemyManagerEvent.WIN, this, WinGameMenu);
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
+    void StartAfterLoad(ObservParam obj)
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+    }
     void Update()
     {      
             playTime += Time.deltaTime;       

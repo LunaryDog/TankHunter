@@ -33,7 +33,12 @@ public class ScreenMenu : BaseBehaviour {
 
     public void NextButton()
     {
-        SceneManager.LoadScene(1);
+        object[] files = (object[])Resources.LoadAll("Levels");
+        if (LevelsController.NumLoadLevel < files.Length)
+        {
+            LevelsController.NumLoadLevel++;
+        }
+        SceneManager.LoadScene(2);
     }
 
     public void ExitButton()

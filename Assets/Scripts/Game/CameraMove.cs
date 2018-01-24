@@ -21,7 +21,7 @@ public class CameraMove : BaseBehaviour {
 	
     void StartAfterLoad(ObservParam obj)
     {
-        player = GameManager.Player.transform;
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         gameBound = GameBound.WorldBound;
         wightCamera = Camera.main.orthographicSize * Camera.main.aspect;
         hightCamera = Camera.main.orthographicSize;
@@ -36,6 +36,7 @@ public class CameraMove : BaseBehaviour {
         }
 		
 	}
+
 
     private void OnDestroy()
     {

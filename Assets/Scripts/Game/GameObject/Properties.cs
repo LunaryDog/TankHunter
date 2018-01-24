@@ -1,10 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿
 
 public abstract  class Properties {
+    public float maxValue;
+    public float MaxValue {
+        get { return maxValue; }
+        set { maxValue = value; }
+    }
 
-    public float MaxValue { get; set; }
     public float MinValue { get; set; }    
     public float StepValue { get; set; }
     float valueProteries;

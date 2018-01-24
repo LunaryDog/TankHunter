@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿
 using UnityEngine;
 
 public class PropertiesBar : MonoBehaviour {
@@ -9,6 +8,7 @@ public class PropertiesBar : MonoBehaviour {
 
     private float offset;
     private float value;
+  
     private float maxValue;
     private float transparency = 0.5f;
 
@@ -17,15 +17,10 @@ public class PropertiesBar : MonoBehaviour {
 
     void Start()
     {
-        // health bar unparents itself from the ship, and follows its position
-        // both have a reference to each other
 
         owner = transform.parent;
         offset = transform.localPosition.y;
         render = GetComponent<SpriteRenderer>();
-
-       // colorFull = Color.green;
-       // colorEmpty = Color.red;
 
         colorFull.a = transparency;
         colorEmpty.a = transparency;
@@ -45,18 +40,17 @@ public class PropertiesBar : MonoBehaviour {
     public void SetValue(float value)
     {
         this.value = value;
-      //  SetBarView();
+    
     }
 
     public void SetMaxValue(float value)
     {
         this.maxValue = value;
-      //  SetBarView();
+      
     }
 
     private void SetBarView()
     {
-      //  transform.localScale = Vector3.Lerp(transform.localScale, new Vector3(value / 20f, transform.localScale.y, transform.localScale.z), Time.deltaTime * 10f);
-       // render.color = Color.Lerp(colorEmpty, colorFull, value / maxValue);
+      
     }
 }

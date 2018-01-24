@@ -11,45 +11,48 @@ public enum EnemyEvents
     DIE,
     DAMAGE
 };
-[System.Serializable]
+
+
 public class Enemy : SteeringAgent {
     Observer observer;
+
+    //поведение
+    SteeringManager manager;
     private EvadeBehaviour evade;    
     private CollisionAvoidanceBehaviour colAvoid;
-    private WallAvoidanceBehaviour wallAvoid;
-    //private GameManager gameManager;
+    private WallAvoidanceBehaviour wallAvoid;   
     private WanderBehaviour wander;
     private SeekBehaviour seek;
     private EnemyEvents state = EnemyEvents.WANDER;
     private SteeringAgent player;
     private GameObject playerObject = GameManager.Player;
+
     bool isDie = false;
-    SteeringManager manager;
+   
+    //настраиваемые параметры поведения
     public float damage = 0.5f;
     public float maxEnemyVelocity = 1.0f;
     public float maxEnemyAcceleration = 3.0f;
     public float sizeEnemy = 0.3f;
-   // Vector3 targetPoint;
-    Animator animator;
-    public float attackDistance = 1.5f;    
+
+    private Animator animator;
+    public float attackDistance = 1f;    
     private float wanderMaxVelocity = 1f;
     private float evadeMaxVelocity = 2f;
 
     public PropertiesBar resistanceBar;
-    ResistanceProperties resistance = new ResistanceProperties();
+    public ResistanceProperties resistance = new ResistanceProperties();
 
     public PropertiesBar healthBar;
-    HealthProperties health = new HealthProperties();
+    public HealthProperties health = new HealthProperties();
+
     // Use this for initialization
     void Awake()
     {
         observer = Observer.Instance;
         animator = gameObject.GetComponent<Animator>();        
         manager = transform.GetComponent<SteeringManager>();
-      //  gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-      
-        //playerObject = GameManager.Player;
-       // leave = gameObject.GetComponent<LeaveBehaviour>();
+     
         wander = GetComponent<WanderBehaviour>();
         colAvoid = GetComponent<CollisionAvoidanceBehaviour>();
         wallAvoid = GetComponent<WallAvoidanceBehaviour>();  
@@ -58,17 +61,14 @@ public class Enemy : SteeringAgent {
         wander.target = gameObject;
         seek.target = playerObject;
         evade.target = playerObject;
-        //state = EnemyEvents.WANDER;
-      //  leave.target = gameObject.transform.parent.gameObject;
-       // resistance = maxResistance;
+      
      
         if (resistanceBar)
         {
             resistanceBar.SetValue(resistance.Value);
             resistanceBar.SetMaxValue (resistance.MaxValue);
         }
-
-        //health = new HealthProperties();
+        
         if (healthBar)
         {
             healthBar.SetValue(health.Value);
@@ -96,7 +96,6 @@ public class Enemy : SteeringAgent {
         
     void Update()
     {
-        
         if (CheckforDie())
         {
             observer.SendMessage(PlayerEvents.DAMAGE, 5f);           
@@ -123,11 +122,10 @@ public class Enemy : SteeringAgent {
         if (!isDie) {
             SetBehaviorWeight(state);
         }
-
         MoveEnemy();
-
-
+        
     }
+
     private bool LookDangerous()
     {
         float distance = Vector3.Distance(Position, player.Position);
@@ -243,10 +241,7 @@ public class Enemy : SteeringAgent {
     private void OnDestroy()
     {
         observer.SendMessage(EnemyEvents.DIE, gameObject);
-        observer.RemoveAllListeners(this);
-       // EnemyManager.RemoveEnemyToList(gameObject);
-       // colAvoid.RemoveAgentToList(gameObject);
-
+        observer.RemoveAllListeners(this);  
     }
     
     IEnumerator Destroy()

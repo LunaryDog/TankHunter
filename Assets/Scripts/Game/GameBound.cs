@@ -1,26 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿
 using UnityEngine;
 
 public class GameBound : BaseBehaviour {
     Observer observer;
-    //public int countTileHight = 10;
-   // public int countTileWight = 15;
-   // public float sizeTileHight = 1.28f;
-   // public float sizeTileWight = 1.28f;
+  
     private static Boundary gameBound;
 
     private void Awake()
     {
-        observer = Observer.Instance;
-        // gameBound = new Boundary(countTileWight * sizeTileWight, countTileHight * sizeTileHight);
-        //
+        observer = Observer.Instance;        
     }
     // Use this for initialization
     private void Start()
     {
         observer.AddListener(LevelBulderEvens.LOAD, this, StartAfterLoad);
-        gameBound = new Boundary(LevelBulder.WidhtWorld, LevelBulder.HeightWorld);
+        gameBound = new Boundary(LevelBuilder.WidhtWorld, LevelBuilder.HeightWorld);
     }
 
     void StartAfterLoad (ObservParam obj) {

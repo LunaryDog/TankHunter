@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class LevelParser : MonoBehaviour {
     
     public LevelData Parse(string levelJson)

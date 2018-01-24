@@ -126,6 +126,7 @@ public class LevelCreate : MonoBehaviour {
                 layer.nameLayer = "Layer " + count;
                 layer.visibleLayer = true;
                 layer.typeLayer = "Tiles";
+                count++;
             }
         }
         return layers;

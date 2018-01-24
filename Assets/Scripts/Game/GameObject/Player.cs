@@ -20,8 +20,8 @@ public class Player : SteeringAgent {
     public float sizePlayer = 0.5f;
     private bool isDied = false;
     private SteeringManager manager;
-    private ArriveBehaviour arrive;    
-    private GameObject moveObject;
+    private ArriveBehaviour arrive;
+    public GameObject moveObject;
     public HealthProperties health  = new HealthProperties();
     public ResistanceProperties resistance = new ResistanceProperties();
 
@@ -43,17 +43,18 @@ public class Player : SteeringAgent {
         observer.AddListener(EnemyEvents.DAMAGE, this, GetDamage);
         observer.AddListener(TileEvens.DAMAGE, this, GetDamage);
         observer.AddListener(TileEvens.SLOW, this, GetDeceleration);
-        
+        manager = transform.GetComponent<SteeringManager>();
+        arrive = transform.GetComponent<ArriveBehaviour>();
+        arrive.target = moveObject;
     }
 
    void StartAfteLoad(ObservParam obj)
     {
         animator = GetComponent<Animator>();
-        moveObject = new GameObject();
+      //  moveObject = new GameObject();
         SteeringBound = GameBound.WorldBound;
-        moveObject.transform.parent = gameObject.transform;
-        manager = transform.GetComponent<SteeringManager>();
-        arrive = transform.GetComponent<ArriveBehaviour>();
+       // moveObject.transform.parent = gameObject.transform;
+        
         MaxVelocity = maxPlayerVelocity;
         MaxAcceleration = maxPlayerAcceleration;
         Size = sizePlayer;
@@ -68,8 +69,9 @@ public class Player : SteeringAgent {
         float v = Input.GetAxis("Vertical");
         float h = Input.GetAxis("Horizontal");
         Vector2 movePoint = new Vector2(h, v);
-        observer.SendMessage(InputEvents.MOVE, movePoint);
-
+        if (movePoint.magnitude > 0.001f) {
+            observer.SendMessage(InputEvents.MOVE, movePoint);
+        }
 
     }
 
@@ -79,7 +81,7 @@ public class Player : SteeringAgent {
       
         Vector3 movePoint = Position +  new Vector3(param.x, param.y, 0);
         moveObject.transform.position = movePoint;
-        arrive.target = moveObject;
+      
         manager.Move();
         if (Velocity.magnitude > 0.0005f)
         {

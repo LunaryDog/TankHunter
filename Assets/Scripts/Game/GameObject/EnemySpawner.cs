@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemySpawner :BaseBehaviour {
     Observer observer;
+
     public List<GameObject> botPrefabs;
     public float spawnInterval = 5f;
     private float spawnTime = 0f;
@@ -18,8 +19,11 @@ public class EnemySpawner :BaseBehaviour {
 
     void Start()
     {
-        //  particleDeath.Stop();
-     //   gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        GameObject player = GameObject.Find("Player");
+        if (!player)
+        {
+            this.enabled = false;
+        }
         spawnedEnemies = new List<GameObject>(maxEnemies);
         animator = gameObject.GetComponent<Animator>();
         observer.AddListener(EnemyManagerEvent.ENEMYSPAWN, this, SetFreeEnemyCount);

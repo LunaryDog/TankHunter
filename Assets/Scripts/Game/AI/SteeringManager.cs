@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class SteeringManager : MonoBehaviour {
 
-   // public Vector3 steering;
-    public SteeringAgent agent;
-   // Boundary steeringBoundary;
+  
+    public SteeringAgent agent; 
    
     List<SteeringBase> behaviours = new List<SteeringBase>();
     public static List<SteeringManager> ManagerList = new List<SteeringManager>();
@@ -48,18 +47,7 @@ public class SteeringManager : MonoBehaviour {
             agent.Velocity = agent.Velocity.normalized * agent.MaxVelocity;
 
         Vector3 newPosition = agent.Position + agent.Velocity * Time.deltaTime;
-        //  Debug.Log(newPosition);
-        /*  if ((agent.Velocity.x < steeringBoundary.LeftBound) | (agent.Velocity.x > steeringBoundary.RightBound) )
-          {
-              agent.Velocity = new Vector3(agent.Velocity.x * -1f, agent.Velocity.y, agent.Velocity.z);
-              newPosition = agent.Position + agent.Velocity * Time.deltaTime;
-          }
-          if ((agent.Velocity.y < steeringBoundary.DownBound) | (agent.Velocity.y > steeringBoundary.UpBound))
-          {
-              agent.Velocity = new Vector3(agent.Velocity.x, agent.Velocity.y *-1f, agent.Velocity.z);
-              newPosition = agent.Position + agent.Velocity * Time.deltaTime;
-          }*/
-       // agent.Position = newPosition;
+      
         agent.Position = new Vector3(Mathf.Clamp(newPosition.x, agent.SteeringBound.LeftBound, agent.SteeringBound.RightBound), Mathf.Clamp(newPosition.y, agent.SteeringBound.DownBound, agent.SteeringBound.UpBound), 0);
         Rotate();   
     }
